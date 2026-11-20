@@ -8,15 +8,21 @@ on:
     - cron: '0 17 * * *'
       timezone: 'America/Los_Angeles'
 
+# Do not let the two scans commit the CSV simultaneously.
+concurrency:
+  group: us-uk-remote-job-scans-${{ github.ref }}
+  cancel-in-progress: false
+
+# Required to commit the cumulative CSV back to this repository.
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   collect:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
-      - name: Checkout source
+      - name: Checkout repository
         uses: actions/checkout@v4
       - name: Install Python
         uses: actions/setup-python@v5
@@ -24,12 +30,28 @@ jobs:
           python-version: '3.11'
       - name: Scan US and UK remote postings
         run: python collect_remote_jobs.py --days 1 --max-boards 0 --workers 4
-      - name: Upload CSV results and error log
+      - name: Merge results into one cumulative CSV
+        run: python merge_job_results.py
+      - name: Commit the cumulative CSV to the repository
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add jobs_all.csv
+          if git diff --cached --quiet; then
+            echo 'No changes in jobs_all.csv'
+            exit 0
+          fi
+          git commit -m 'Update collected US and UK remote jobs'
+          git push origin "HEAD:${BRANCH}"
+      - name: Upload CSV results and error log as backup
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: us-uk-remote-jobs-${{ github.run_number }}
           path: |
+            jobs_all.csv
             jobs_us_uk_remote.csv
             jobs_review_location.csv
             jobs_errors.txt

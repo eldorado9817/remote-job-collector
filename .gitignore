@@ -1,0 +1,5 @@
+jobs_us_uk_remote.csv
+jobs_review_location.csv
+jobs_errors.txt
+__pycache__/
+*.pyc
