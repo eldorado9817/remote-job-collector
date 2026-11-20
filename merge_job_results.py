@@ -12,7 +12,7 @@ from pathlib import Path
 
 BASE_FIELDS = [
     "platform", "company", "title", "country", "published_local",
-    "published_utc", "location", "job_url", "board_slug", "job_id"
+    "published_utc", "location", "job_url", "board_slug", "job_id", "date_source"
 ]
 EXTRA_FIELDS = ["location_check", "first_seen_utc", "last_seen_utc"]
 FIELDS = BASE_FIELDS + EXTRA_FIELDS
