@@ -1,4 +1,4 @@
-name: US and UK Remote Jobs
+name: US + UK Remote Software and AI Jobs — Posted Today
 
 on:
   workflow_dispatch:
@@ -8,52 +8,136 @@ on:
     - cron: '0 17 * * *'
       timezone: 'America/Los_Angeles'
 
-# Do not let the two scans commit the CSV simultaneously.
-concurrency:
-  group: us-uk-remote-job-scans-${{ github.ref }}
-  cancel-in-progress: false
-
-# Required to commit the cumulative CSV back to this repository.
 permissions:
   contents: write
 
+# Keep the daily commit job from racing another scheduled or manual run.
+concurrency:
+  group: usuk-software-ai-today-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
-  collect:
+  discover:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 20
+    outputs:
+      scan_date: ${{ steps.day.outputs.date }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Install Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Scan US and UK remote postings
-        run: python collect_remote_jobs.py --days 1 --max-boards 0 --workers 4
-      - name: Merge results into one cumulative CSV
+      - name: Determine today's Pacific date once for this run
+        id: day
+        shell: bash
+        run: echo "date=$(TZ=America/Los_Angeles date +%F)" >> "$GITHUB_OUTPUT"
+      - name: Auto-discover company boards across eight ATS platforms
+        run: python discover_boards.py --minimum 500
+      - name: Upload directory for all scan shards
+        uses: actions/upload-artifact@v4
+        with:
+          name: board-directory
+          path: |
+            discovered_boards.csv
+            discovery_summary.json
+          retention-days: 3
+
+  scan:
+    needs: discover
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      # Eight shards are scanned IN PARALLEL each run (not 1/8 per day).
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          name: board-directory
+      - name: Scan shard for today's posted jobs, software/AI, fully remote, US or UK
+        shell: bash
+        run: |
+          EXTRA=''
+          # Workable global XML can be very large; run once, not eight times.
+          if [ '${{ matrix.shard }}' = '0' ]; then EXTRA='--workable-global'; fi
+          python collect_remote_jobs.py \
+            --directory discovered_boards.csv \
+            --scope usuk \
+            --roles software-ai \
+            --workplace remote \
+            --days 1 \
+            --reference-date '${{ needs.discover.outputs.scan_date }}' \
+            --max-boards 0 \
+            --workers 4 \
+            --shard-count 8 \
+            --skip-workable-boards \
+            --shard-index '${{ matrix.shard }}' \
+            --output 'jobs_shard_${{ matrix.shard }}' \
+            $EXTRA
+      - name: Upload this shard's results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ats-shard-${{ matrix.shard }}
+          path: jobs_shard_${{ matrix.shard }}_*
+          if-no-files-found: warn
+          retention-days: 3
+
+  aggregate:
+    needs: [discover, scan]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          name: board-directory
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ats-shard-*
+          path: shards
+          merge-multiple: false
+      - name: Merge all eight shards (fail if one is missing)
+        run: python combine_shard_results.py --shards 8
+      - name: Update cumulative repository CSV
         run: python merge_job_results.py
-      - name: Commit the cumulative CSV to the repository
+      - name: Commit results to repository
         env:
           BRANCH: ${{ github.ref_name }}
+        shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add jobs_all.csv
           if git diff --cached --quiet; then
-            echo 'No changes in jobs_all.csv'
-            exit 0
+            echo 'No changes to cumulative CSV'
+          else
+            git commit -m 'Update US/UK remote software and AI jobs'
+            git push origin "HEAD:${BRANCH}"
           fi
-          git commit -m 'Update collected US and UK remote jobs'
-          git push origin "HEAD:${BRANCH}"
-      - name: Upload CSV results and error log as backup
+      - name: Upload combined CSVs, cumulative history, and diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: us-uk-remote-jobs-${{ github.run_number }}
+          name: today-us-uk-remote-software-ai-${{ github.run_number }}
           path: |
-            jobs_all.csv
             jobs_us_uk_remote.csv
             jobs_review_location.csv
+            jobs_remote_candidates.csv
+            jobs_all.csv
             jobs_errors.txt
-          if-no-files-found: warn
+            discovered_boards.csv
+            discovery_summary.json
+            scan_summary.json
           retention-days: 14
+          if-no-files-found: warn

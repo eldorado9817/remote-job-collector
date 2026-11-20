@@ -1,78 +1,81 @@
-# US + UK remote engineering jobs — 8 ATS platforms
+# US + UK **Remote Software & AI — Published Today** (8 ATS providers)
 
-This package upgrades the existing Greenhouse + Ashby collector with **Workable, SmartRecruiters, Recruitee, Breezy HR, Workday, and BambooHR**.
+GitHub Actions collector for **software engineering and AI-related openings**, **fully remote**, with a public US or UK hiring-location indication, **published on the current Pacific calendar day**. Source company boards are discovered worldwide. Jobs with unverified dates or outside-US/UK location indications are **not** included in the confirmed-today CSV.
 
-## Schedule and result locations
+## Platforms and publication fields
 
-- Runs **9:00 AM and 5:00 PM America/Los_Angeles** every day (PST/PDT automatically).
-- GitHub repository **Code → `jobs_all.csv`** is the cumulative history. `first_seen_utc` is when the collector first saw the role, not the employer's posting date.
-- Each run also uploads **Actions → selected workflow run → Artifacts** containing `jobs_all.csv`, `jobs_us_uk_remote.csv`, `jobs_review_location.csv`, and `jobs_errors.txt` (14-day retention).
-- Manual run: **Actions → US and UK Remote Jobs → Run workflow**.
+| ATS | Checked publication date | Notes |
+|---|---|---|
+| Greenhouse | `first_published` | Requires the individual-job detail endpoint. `updated_at` is never substituted. |
+| Ashby | `publishedAt` | Means **last published**, so a republished job can count as today. |
+| Workable | `published_on`, or date in public worldwide XML | XML is a subset of Workable listings, not a global census. |
+| SmartRecruiters | `releasedDate` | Uses paginated public company feeds. |
+| Recruitee | `published_at` | When exposed on the company's public offer feed. |
+| Breezy HR | `published_date` | When present in the public feed. |
+| Workday | `jobPostingInfo.startDate` | Sometimes only a date (no time zone); do not invent a time. |
+| BambooHR | `datePosted` | When available on job detail. |
 
-## Upgrade steps
+**Dates:** A timestamp must have a timezone to count. Its **Pacific local date** is compared to the date of the scan. A date-only field is compared as written, marked `(date only)` in `date_source`, because the ATS gives no timezone. Undated, unknown and older jobs do not appear in the confirmed-today file. Full publication-field availability and semantics vary between sites.
 
-1. Extract ZIP. Copy these files into your GitHub repository, preserving paths: `collect_remote_jobs.py`, `merge_job_results.py`, `extra_boards.csv`, `.github/workflows/daily-remote-jobs.yml`.
-2. Merge `.gitignore` if your repository already has one.
-3. Commit to the repository's default branch. Ensure repository GitHub Actions workflow has **Read and write permissions** so it can commit `jobs_all.csv` (`contents: write` is already requested in YAML; your organization may impose restrictions).
-4. Run the workflow manually once and view artifacts and `jobs_all.csv`.
+## Default filters
 
-## How to add companies for the six new ATS platforms
+- `--scope usuk`: explicit US, UK, or worldwide remote hiring indication.
+- `--workplace remote`: reject identified hybrid and on-site positions.
+- `--roles software-ai`: relevant titles such as Software Engineer, Python Developer, React Developer, Backend/Full-Stack, DevOps, SRE, Platform, Cloud/Data Engineer, AI Engineer, ML Engineer, MLOps, AI Researcher, Data Scientist, Prompt Engineer, AI Trainer and AI Evaluation.
+- `--days 1`: **today only**, using `America/Los_Angeles` for US **and** UK jobs.
+- No `--all-dates`, `--allow-undated`, or `--roles all` switches in the workflow.
 
-Edit `extra_boards.csv` with columns `platform,company,board_slug`. Each row is a *known* company careers board, not a keyword search. Examples in the file include some public sample boards and a full Workday URL.
+The classifier uses public job-title and ATS location clues and is a **best-effort** filter; read each job posting for hiring eligibility and mandatory time-zone/state constraints.
 
+## Run schedule and coverage
+
+Runs at **9:00 AM and 5:00 PM America/Los_Angeles** every day with GitHub Actions' IANA time-zone-aware cron, including PDT/PST transitions. Each run **attempts all discovered company boards** by launching **eight shards in parallel**. It does **not** scan one-eighth of boards every four days anymore. The large Workable worldwide XML is read once on shard 0. **Every shard** uses `--skip-workable-boards` to maintain identical directory indexing, preventing gaps in partitioning.
+
+Worldwide company discovery uses public directories; `extra_boards.csv` is optional. No public source indexes all employers, and sites can rate-limit, block, remove feeds or omit publication fields. Coverage and successful scan counts are NOT guaranteed. Eight parallel runners can consume **substantially more free GitHub Actions minutes**, especially on a private repository. The job matrix has a five-hour per-shard safety timeout; some runs may fail or exceed a plan's included allowance. Please monitor **Actions → Usage**.
+
+At 5 PM only jobs published up to that run are discoverable. Jobs published later in the Pacific day may be **missed** by the strict today-only filter at next day's 9 AM run; consider an optional separate backfill scan if needed. Scheduled workflows may also start late.
+
+## Deploy to your repository
+
+1. Download the ZIP, extract it and copy its files into the repository. Preserve `.github/workflows/daily-remote-jobs.yml`.
+2. Keep the repository's default branch with workflow permissions **Settings → Actions → General → Workflow permissions → Read and write permissions** if needed (the workflow declares `contents: write`).
+3. Commit updated Python scripts, `extra_boards.csv` (optional), `tests/`, and the workflow file.
+4. In GitHub click **Actions → US + UK Remote Software and AI Jobs — Posted Today → Run workflow**.
+5. Wait for `discover`, all eight `scan` shards, and `aggregate` to complete. If a shard fails, combined results intentionally **do not** silently omit that shard; its logs/artifacts remain for diagnostics.
+
+## Result files
+
+| File | Meaning |
+|---|---|
+| **`jobs_us_uk_remote.csv`** | **Confirmed location-matched, remotely classified software/AI jobs published today Pacific** from all completed shards. This is your primary daily file. |
+| `jobs_review_location.csv` | Posted today and remote technical roles, but the employer's US/UK location eligibility could not be confidently inferred. Not confirmed US/UK. |
+| `jobs_remote_candidates.csv` | Both confirmed and location-review records from today's scan. |
+| **`jobs_all.csv`** | Cumulative history of matching results from successful scans, committed into your repo. **Not** a today-only list; sort/filter `published_date_pt` for any specific day. |
+| `jobs_errors.txt` | Public API errors from scan shards. |
+| `discovered_boards.csv` | Discovered company boards, not job results. |
+| `discovery_summary.json` | Board directory counts and source failures. |
+| `scan_summary.json` | Shard completion, counts and platform breakdown. |
+
+Download combined daily CSVs through **Actions → successful run → Artifacts → `today-us-uk-remote-software-ai-...`**, retention 14 days. Cumulative `jobs_all.csv` remains under the repo **Code** tab. Every shard also has a short-lived diagnostic artifact.
+
+**Migration:** Earlier versions collected all occupations and/or older and undated jobs. To avoid mixing them into the new history, this version **does not carry forward** prior CSV rows that lack its `collection_version`. Back up your old `jobs_all.csv` before updating if you need it.
+
+## Local run (sample: first shard)
+
+```bash
+python discover_boards.py --minimum 500
+python collect_remote_jobs.py --directory discovered_boards.csv \
+  --scope usuk --roles software-ai --workplace remote \
+  --days 1 --max-boards 0 --workers 4 \
+  --shard-count 8 --shard-index 0 --skip-workable-boards --workable-global
 ```
-platform,company,board_slug
-workable,Hugging Face,huggingface
-smartrecruiters,Bosch,BoschGroup
-recruitee,bunq,bunq
-breezy,Breezy HR,breezy
-workday,NVIDIA,https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite
-bamboohr,Your BambooHR Company,company-subdomain
+
+For a repeatable test on a particular date (still using Pacific timezone), append `--reference-date 2026-11-20`. If you run only one shard you do **not** have full discovered-board coverage. To scan the entire directory locally in a single process use `--shard-count 1 --shard-index 0`, but this can take hours.
+
+Run local tests:
+
+```bash
+python -m unittest discover -s tests -v
 ```
 
-The **BambooHR line is illustrative**, so replace `company-subdomain` with the actual prefix from `https://company-subdomain.bamboohr.com/careers`. For Workday you **must provide the real full careers URL** (`https://tenant.wd5.myworkdayjobs.com/SITE`), rather than just a company name. Some Workday sites use slightly different configurations and may need a tailored adapter. Use a unique company row per board. Do not guess board identifiers.
-
-The bundled original public directory currently provides mostly Greenhouse and Ashby boards. **Only new-platform boards that are actually present in `extra_boards.csv` (or a supplied `--directory` CSV) get scanned**. Adding platform integrations by itself does not create a worldwide company directory. Add additional verified boards to expand coverage. You may supply your own eight-platform directory with `platform,company,board_slug` fields using `--directory path.csv`.
-
-## Local usage
-
-Uses **Python 3.11+** and standard library only; no API keys or `pip install` needed.
-
-```
-python collect_remote_jobs.py --days 1 --max-boards 0 --workers 4
-python merge_job_results.py
-```
-
-Arguments: `--days 1` today only; `--days 3` three calendar days. `--max-boards 0` all configured boards; `--workers 4` concurrency. Use a small number of workers to respect public boards.
-
-## Posting dates and caveats
-
-| ATS | Public source | Date field |
-| --- | --- | --- |
-| Greenhouse | public board jobs API | `first_published` |
-| Ashby | posting API | `publishedAt` (may change after republishing) |
-| Workable | widget accounts API | `published_on` |
-| SmartRecruiters | postings API (offset pagination) | `releasedDate` |
-| Recruitee | public offers feed | `published_at` |
-| Breezy HR | public `/json` feed | `published_date` |
-| Workday | CXS job details | `jobPostingInfo.startDate` when supplied |
-| BambooHR | public careers job detail | `datePosted` when supplied |
-
-**Date-only values are compared as calendar dates**, with `date_source` indicating date precision. Missing or relative-only Workday dates are skipped instead of silently treating an updated/created date as a published date. A site may require auth, use another schema, remove fields, or rate-limit; see `jobs_errors.txt`.
-
-**Remote-country matching is deliberately conservative but imperfect.** A US/UK location marker is not proof an employer accepts applicants living there. Unspecified remote geography goes into `jobs_review_location.csv`. Workday and BambooHR may provide weak remote flags; some real remote jobs will be missed. Always verify geography and work eligibility on the application page.
-
-The collector stores roles passing the **publish-date window** rather than every active role. The cumulative `jobs_all.csv` retains historically found jobs, including positions that may subsequently close. New platform-specific date sources are recorded in the `date_source` column.
-
-## Source references
-
-- Greenhouse and Ashby sample board directory: https://github.com/fyrosofttech/lastroundai-hiring-data/tree/main/ats-directory
-- Workable public API: https://workable.readme.io/reference/jobs-1
-- SmartRecruiters postings: https://developers.smartrecruiters.com/reference/v1listpostings
-- Recruitee offers: https://docs.recruitee.com/reference/offers
-- Other public endpoints and caveats: https://github.com/Mersetti/ats-job-board-apis
-- GitHub workflows: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#onschedule
-
-## Validation
-
-Python syntax and locally mocked examples across all eight ATS adapters were tested. The GitHub run and each company's current live responses **have not** been end-to-end verified. Some sample boards might have zero recent jobs or may change their APIs.
+Python 3.11+; no external Python libraries required. This is a tested *code package*; it has **not** been run end-to-end against every live provider from GitHub Actions. Respect public API terms and rate limits.

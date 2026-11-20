@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Find fresh US/UK remote engineering openings across eight public ATS platforms.
+"""Collect US/UK fully remote software engineering and AI jobs published today PT.
 
-Python 3.9+. Standard library only. Reads company slugs from a public CC-BY 4.0
-LastRound AI directory (or from a local CSV). Writes verified-geography and
-needs-review CSVs; never treats 'Remote' alone as globally eligible.
+Company boards are discovered worldwide, but results require a verified publication
+date in America/Los_Angeles and US/UK location indications. Source coverage is not exhaustive.
 """
 
 import argparse
@@ -22,14 +21,20 @@ from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
+from datetime import timezone
+from email.utils import parsedate_to_datetime
+import xml.etree.ElementTree as ET
+from contextlib import closing
 
 DIRECTORY_URL = (
     "https://raw.githubusercontent.com/fyrosofttech/lastroundai-hiring-data/main/"
     "ats-directory/lastroundai-ats-company-directory-2026-08.csv"
 )
-USER_AGENT = "US-UK-Remote-Jobs-Collector/2.0 (public career feeds)"
+USER_AGENT = "USUK-Remote-Software-AI-Today/5.0 (public career feeds)"
+PACIFIC = ZoneInfo("America/Los_Angeles")
+SETTINGS = {"scope": "usuk", "roles": "software-ai", "workplace": "remote", "allow_undated": False, "all_dates": False, "reference_date": None}
 FIELDS = ["platform", "company", "title", "country", "published_local",
-          "published_utc", "location", "job_url", "board_slug", "job_id", "date_source"]
+          "published_utc", "published_date_pt", "location", "job_url", "board_slug", "job_id", "date_source"]
 SUPPORTED = {"greenhouse", "ashby", "workable", "smartrecruiters", "recruitee",
              "breezy", "breezyhr", "workday", "bamboohr"}
 
@@ -41,6 +46,29 @@ ROLE_RE = re.compile(
     r"principal engineer|engineering lead|technical lead|solutions engineer|"
     r"python developer|react developer|node\.?js developer)\b", re.I,
 )
+# Titles directly associated with building software or AI/ML systems, including AI training roles.
+# Avoid matching generic engineering, marketing and sales titles without relevant qualifiers.
+SOFTWARE_AI_RE = re.compile(
+    r"\b(?:software\s+(?:engineer|developer|architect|engineering|development|" 
+    r"engineering\s+manager)|" 
+    r"back[ -]?end|front[ -]?end|full[ -]?stack|fullstack|" 
+    r"(?:python|java|javascript|typescript|react|node\.?js|go|golang|ruby|rails|django|"
+    r"spring boot|\.net|c#|c\+\+|rust|kotlin|swift|api|application|web|"
+    r"mobile|ios|android)\s+(?:developer|engineer|architect)|"
+    r"(?:platform|devops|site reliability|infrastructure|cloud|security|data|"
+    r"systems|distributed systems|reliability)\s+(?:engineer|developer|architect)|"
+    r"\bsre\b|devops|\bmlops\b|"
+    r"(?:machine learning|deep learning|artificial intelligence|generative ai|genai|"
+    r"\bai\b|\bml\b|\bllm\b|\bnlp\b|computer vision|"
+    r"language model|foundation model|model training|reinforcement learning)"
+    r"(?:[ /-]*(?:engineer|developer|scientist|researcher|research|architect|"
+    r"trainer|evaluator|annotator|specialist|lead|manager|intern))?|"
+    r"(?:research|applied)\s+(?:scientist|engineer)|"
+    r"(?:prompt|ai product|ai solutions)\s+(?:engineer|developer|manager)|"
+    r"(?:data|machine learning)\s+scientist|"
+    r"(?:engineering|technical)\s+lead)\b", re.I,
+)
+
 REMOTE_RE = re.compile(r"\b(remote|work from home|fully distributed|work anywhere)\b", re.I)
 NON_REMOTE_RE = re.compile(r"\b(hybrid|on[- ]?site|in[- ]?office)\b", re.I)
 US_RE = re.compile(
@@ -55,7 +83,7 @@ UK_RE = re.compile(
     r"wales|northern ireland|\bGB\b|london|manchester|edinburgh|glasgow|"
     r"birmingham|bristol|leeds|cambridge|oxford|cardiff|belfast)\b", re.I
 )
-GLOBAL_RE = re.compile(r"\b(worldwide|anywhere in the world|globally remote|remote worldwide)\b", re.I)
+GLOBAL_RE = re.compile(r"\b(worldwide|anywhere in the world|globally remote|global remote|remote worldwide|work from anywhere)\b", re.I)
 
 
 def fetch(url, retries=2, payload=None):
@@ -88,18 +116,24 @@ def plain(raw):
     return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", raw or ""))).strip()
 
 
+def today_pacific():
+    """Local publication day is Pacific for US and UK jobs alike."""
+    return SETTINGS.get("reference_date") or datetime.now(PACIFIC).date()
+
+
 def date_recent(timestamp, tz, days):
+    """Accept absolute timestamps only when their Pacific local date is in range."""
     if not timestamp:
         return None
     try:
-        dt = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+        dt = datetime.fromisoformat(str(timestamp).replace("Z", "+00:00"))
         if not dt.tzinfo:
             return None
-        local = dt.astimezone(ZoneInfo(tz))
-        today = datetime.now(ZoneInfo(tz)).date()
-        if today - timedelta(days=days - 1) <= local.date() <= today:
+        local = dt.astimezone(PACIFIC)
+        today = today_pacific()
+        if SETTINGS.get("all_dates") or today - timedelta(days=days - 1) <= local.date() <= today:
             return local.isoformat(timespec="seconds")
-    except (ValueError, OverflowError):
+    except (ValueError, OverflowError, TypeError):
         return None
     return None
 
@@ -128,33 +162,74 @@ def geography(job_locations, short_description):
         return "US"
     if uk:
         return "UK"
-    if GLOBAL_RE.search(locations):
-        return "Review: worldwide"
+    # Explicit worldwide eligibility includes applicants in both target countries.
+    # Do not infer this from a generic company-description mention of global offices.
+    if GLOBAL_RE.search(locations) or re.search(
+        r"\b(?:this (?:role|position) is (?:fully )?remote worldwide|"
+        r"work (?:remotely )?from anywhere in the world|"
+        r"we hire (?:remotely )?worldwide)\b", desc, re.I
+    ):
+        return "US & UK"
     return "Review: location unspecified"
+
+
+def role_ok(title):
+    role = SETTINGS["roles"]
+    return role == "all" or bool((SOFTWARE_AI_RE if role == "software-ai" else ROLE_RE).search(title or ""))
+
+
+def remote_ok(title, location, description="", structured=None):
+    if SETTINGS["workplace"] == "any":
+        return True
+    if str(structured or "").lower() in ("hybrid", "onsite", "on-site", "on_site"):
+        return False
+    if NON_REMOTE_RE.search(f"{title} {location}"):
+        return False
+    if structured is True or str(structured or "").strip().lower() in ("remote", "fully remote", "100% remote"):
+        return True
+    if REMOTE_RE.search(f"{title} {location}"):
+        return True
+    # A random "remote" mention in the benefits section is insufficient.
+    intro = description[:1600]
+    return bool(re.search(
+        r"\b(?:fully remote|100% remote|entirely remote|remote-only|"
+        r"remote position|remote role|work from home|work from anywhere|"
+        r"this position is remote|this role is remote)\b", intro, re.I
+    ))
+
+
+def target_zones(country):
+    # A single time zone for today's publication window, regardless of job country.
+    return (("PT", "America/Los_Angeles"),)
+
+
+def make_undated(platform, company, title, country, location, url, slug, jid):
+    if not SETTINGS["allow_undated"]:
+        return []
+    return [dict(platform=platform, company=company, title=title, country=country,
+                 published_local="", published_utc="", published_date_pt="", location=location,
+                 job_url=url, board_slug=slug, job_id=str(jid), date_source="unavailable")]
 
 
 def normalize_greenhouse(company, slug, job, days):
     title = job.get("title", "")
-    if not ROLE_RE.search(title):
+    if not role_ok(title):
         return []
     location = (job.get("location") or {}).get("name", "")
     description = plain(job.get("content", ""))
-    if NON_REMOTE_RE.search(f"{title} {location}"):
-        return []
-    # No structured workplaceType for Greenhouse; require a positive signal
-    # from its location/title, or at the start of its description.
-    if not REMOTE_RE.search(f"{title} {location}") and not REMOTE_RE.search(description[:350]):
+    if not remote_ok(title, location, description):
         return []
     country = geography([location], description)
     out = []
-    for target, tz in (("US", "America/Los_Angeles"), ("UK", "Europe/London")):
-        if target not in country and not country.startswith("Review"):
-            continue
+    if not job.get("first_published"):
+        return make_undated("Greenhouse", company, title.strip(), country, location,
+                            job.get("absolute_url", ""), slug, job.get("id", ""))
+    for target, tz in target_zones(country):
         local = date_recent(job.get("first_published"), tz, days)
         if local:
             out.append(dict(platform="Greenhouse", company=company, title=title.strip(),
                             country=country, published_local=local, published_utc=job["first_published"],
-                            location=location, job_url=job.get("absolute_url", ""),
+                            published_date_pt=local[:10], location=location, job_url=job.get("absolute_url", ""),
                             board_slug=slug, job_id=str(job.get("id", "")), date_source="first_published"))
             break
     return out
@@ -162,10 +237,10 @@ def normalize_greenhouse(company, slug, job, days):
 
 def normalize_ashby(company, slug, job, days):
     title = job.get("title", "")
-    if not ROLE_RE.search(title) or job.get("isListed") is False:
+    if not role_ok(title) or job.get("isListed") is False:
         return []
     # Ashby's isRemote=true can include HYBRID. workplaceType must be Remote.
-    if job.get("workplaceType") != "Remote":
+    if not remote_ok(title, job.get("location", ""), structured=job.get("workplaceType")):
         return []
     locations = [job.get("location", "")]
     locations += [x.get("location", "") for x in job.get("secondaryLocations", [])]
@@ -175,14 +250,15 @@ def normalize_ashby(company, slug, job, days):
         locations.append((secondary.get("address") or {}).get("addressCountry", ""))
     description = plain(job.get("descriptionPlain") or job.get("descriptionHtml", ""))
     country = geography(locations, description)
-    for target, tz in (("US", "America/Los_Angeles"), ("UK", "Europe/London")):
-        if target not in country and not country.startswith("Review"):
-            continue
+    if not job.get("publishedAt"):
+        return make_undated("Ashby", company, title.strip(), country, job.get("location", ""),
+                            job.get("jobUrl", ""), slug, job.get("jobUrl", ""))
+    for target, tz in target_zones(country):
         local = date_recent(job.get("publishedAt"), tz, days)
         if local:
             return [dict(platform="Ashby", company=company, title=title.strip(),
                          country=country, published_local=local, published_utc=job["publishedAt"],
-                         location=job.get("location", ""), job_url=job.get("jobUrl", ""),
+                         published_date_pt=local[:10], location=job.get("location", ""), job_url=job.get("jobUrl", ""),
                          board_slug=slug, job_id=job.get("jobUrl", "").split("?")[0].rstrip("/").split("/")[-1], date_source="publishedAt")]
     return []
 
@@ -203,41 +279,40 @@ def parse_posting_date(value):
             return None
         return dt, "timestamp"
     except ValueError:
-        return None
+        try:
+            dt = parsedate_to_datetime(txt)
+            return (dt, "timestamp") if dt.tzinfo else None
+        except (TypeError, ValueError, IndexError):
+            return None
 
 
 def normalize_generic(platform, company, slug, job, days):
     title = str(job.get("title") or "")
-    if not ROLE_RE.search(title):
+    if not role_ok(title):
         return []
     location = str(job.get("location") or "")
     description = plain(str(job.get("description") or ""))
-    # Structured remote = true, but hybrid does not count as remote-only.
-    workplace = str(job.get("workplace") or "").lower()
-    if workplace in ("hybrid", "onsite", "on-site", "on_site"):
-        return []
-    if not (job.get("remote") is True or workplace in ("remote", "fully remote") or
-            REMOTE_RE.search(f"{title} {location} {description[:350]}")):
-        return []
-    if NON_REMOTE_RE.search(f"{title} {location}"):
+    workplace = job.get("workplace")
+    # Explicit hybrid/on-site metadata overrides a separate is_remote flag.
+    arrangement = workplace if str(workplace or "").strip() else (True if job.get("remote") is True else None)
+    if not remote_ok(title, location, description, structured=arrangement):
         return []
     country = geography([location, str(job.get("other_locations") or "")], description)
     parsed = parse_posting_date(job.get("date"))
     if not parsed:
-        return []  # no usable publication date
+        return make_undated(platform, company, title.strip(), country, location,
+                            str(job.get("url") or ""), slug, job.get("id") or job.get("url") or "")
     dt, precision = parsed
-    for target, tz in (("US", "America/Los_Angeles"), ("UK", "Europe/London")):
-        if target not in country and not country.startswith("Review"):
-            continue
-        local = dt.astimezone(ZoneInfo(tz))
-        today = datetime.now(ZoneInfo(tz)).date()
+    for target, tz in target_zones(country):
+        local = dt.astimezone(PACIFIC)
+        today = today_pacific()
         # Date-only values express a calendar date with no timezone: compare directly.
         pub_date = dt.date() if precision == "date" else local.date()
-        if today - timedelta(days=days - 1) <= pub_date <= today:
+        if SETTINGS.get("all_dates") or today - timedelta(days=days - 1) <= pub_date <= today:
             return [dict(platform=platform, company=company, title=title.strip(),
                          country=country, published_local=pub_date.isoformat() if precision == "date" else local.isoformat(timespec="seconds"),
                          published_utc=dt.date().isoformat() if precision == "date" else dt.astimezone(ZoneInfo("UTC")).isoformat(timespec="seconds"),
-                         location=location, job_url=str(job.get("url") or ""),
+                         published_date_pt=pub_date.isoformat(), location=location, job_url=str(job.get("url") or ""),
                          board_slug=slug, job_id=str(job.get("id") or job.get("url") or ""),
                          date_source=str(job.get("date_source") or "unknown") + (" (date only)" if precision == "date" else ""))]
     return []
@@ -317,7 +392,7 @@ def jobs_breezy(company, slug, days):
     rows = []
     for j in jobs:
         loc = j.get("location") or {}
-        remote = loc.get("is_remote") is True
+        remote = isinstance(loc, dict) and loc.get("is_remote") is True
         rows += check_candidate("Breezy HR", company, slug, dict(
             title=j.get("name") or j.get("title"), location=text_location(loc),
             other_locations=text_location(j.get("locations") or []), remote=remote,
@@ -334,7 +409,7 @@ def jobs_bamboohr(company, slug, days):
     rows = []
     for j in jobs:
         title = j.get("jobOpeningName") or j.get("title")
-        if not title or not ROLE_RE.search(title):
+        if not title or not role_ok(title):
             continue
         jid = j.get("id")
         if jid is None:
@@ -362,7 +437,7 @@ def jobs_bamboohr(company, slug, days):
 def workday_endpoint(slug):
     """Full board URL is required; extracting tenant from hostname avoids guesses."""
     u = urlparse(slug)
-    if u.scheme != "https" or not (u.hostname or "").endswith(".myworkdayjobs.com"):
+    if u.scheme != "https" or not (u.hostname or "").endswith((".myworkdayjobs.com", ".myworkdaysite.com")):
         raise ValueError("Workday board_slug must be full https://tenant.wdN.myworkdayjobs.com/SITE URL")
     parts = [p for p in u.path.split("/") if p]
     if not parts:
@@ -390,7 +465,7 @@ def jobs_workday(company, slug, days):
         jobs = data.get("jobPostings") or []
         for j in jobs:
             title = j.get("title") or ""
-            if not ROLE_RE.search(title):
+            if not role_ok(title):
                 continue
             path = j.get("externalPath") or ""
             if not path.startswith("/"):
@@ -417,6 +492,42 @@ def jobs_workday(company, slug, days):
     return rows
 
 
+def jobs_workable_global(days):
+    """Official Workable hourly global XML feed; stream, never load 140+MB into RAM.
+
+    It includes jobs published to Jobs by Workable, not jobs opted out of that board.
+    """
+    feed_url = "https://www.workable.com/boards/workable.xml"
+    rows, visited = [], 0
+    req = Request(feed_url, headers={"User-Agent": USER_AGENT, "Accept": "application/xml,text/xml"})
+    with closing(urlopen(req, timeout=240)) as stream:
+        context = ET.iterparse(stream, events=("start", "end"))
+        _, root = next(context)
+        for event, elem in context:
+            if event != "end" or elem.tag.rsplit("}", 1)[-1].lower() != "job":
+                continue
+            visited += 1
+            fields = {x.tag.rsplit("}", 1)[-1].lower(): (x.text or "").strip() for x in elem}
+            title = fields.get("title", "")
+            if role_ok(title):
+                company = fields.get("company", "Unknown Workable company")
+                location = ", ".join(x for x in (fields.get("city"), fields.get("state"), fields.get("country")) if x)
+                date_raw = fields.get("date") or ""
+                try:
+                    dt = parsedate_to_datetime(date_raw)
+                    date_raw = dt.isoformat() if dt.tzinfo else ""
+                except (ValueError, TypeError, IndexError):
+                    date_raw = ""
+                rows += normalize_generic("Workable", company, "workable_global_feed", dict(
+                    title=title, location=location, description=fields.get("description", ""),
+                    remote=fields.get("remote", "").lower() == "true",
+                    date=date_raw, date_source="workable.xml date",
+                    url=fields.get("url", ""), id=fields.get("referencenumber") or fields.get("url", "")), days)
+            root.clear()
+    print(f"Workable worldwide feed: parsed {visited:,} listings; {len(rows):,} matches", flush=True)
+    return rows
+
+
 ADAPTERS = {
     "workable": jobs_workable,
     "smartrecruiters": jobs_smartrecruiters,
@@ -428,12 +539,38 @@ ADAPTERS = {
 }
 
 
+def jobs_greenhouse(company, slug, days):
+    """Greenhouse's list endpoint does NOT reliably contain first_published.
+
+    Official API documents the timestamp in the per-job detail endpoint.
+    Fetch detail only for candidate remote software/AI jobs, avoiding date
+    estimates based on updated_at (which is not a publication timestamp).
+    """
+    base = f"https://boards-api.greenhouse.io/v1/boards/{quote(slug)}/jobs"
+    listings = get_json(base + "?content=true").get("jobs", [])
+    rows = []
+    for listing in listings:
+        title = listing.get("title") or ""
+        location = (listing.get("location") or {}).get("name", "")
+        if not role_ok(title) or not remote_ok(title, location, plain(listing.get("content", ""))):
+            continue
+        jid = listing.get("id")
+        if not jid:
+            continue
+        try:
+            detail = get_json(base + f"/{quote(str(jid))}?content=true")
+        except (ValueError, HTTPError, URLError, TimeoutError) as exc:
+            print(f"WARNING: Greenhouse detail {slug}/{jid}: {str(exc)[:120]}", flush=True)
+            continue
+        rows.extend(normalize_greenhouse(company, slug, detail, days))
+    return rows
+
+
 def process_board(board, days):
     platform, company, slug = board
     try:
         if platform == "greenhouse":
-            jobs = get_json(f"https://boards-api.greenhouse.io/v1/boards/{quote(slug)}/jobs?content=true").get("jobs", [])
-            rows = [row for j in jobs for row in normalize_greenhouse(company, slug, j, days)]
+            rows = jobs_greenhouse(company, slug, days)
         elif platform == "ashby":
             jobs = get_json(f"https://api.ashbyhq.com/posting-api/job-board/{quote(slug)}").get("jobs", [])
             rows = [row for j in jobs for row in normalize_ashby(company, slug, j, days)]
@@ -483,20 +620,40 @@ def write_csv(path, rows):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--days", type=int, default=1, help="Calendar days including today (default 1)")
-    parser.add_argument("--max-boards", type=int, default=250,
-                        help="Maximum boards to check, 0 = all; default 250 for a faster first run")
+    parser.add_argument("--max-boards", type=int, default=0,
+                        help="Maximum boards per shard to check, 0 = all (default 0)")
     parser.add_argument("--workers", type=int, default=4, help="Concurrent requests; keep low (default 4)")
     parser.add_argument("--directory", help="Optional path to the ATS directory CSV, instead of downloading it")
     parser.add_argument("--output", default="jobs", help="CSV filename prefix (default jobs)")
-    parser.add_argument("--extra-boards", default="extra_boards.csv", help="CSV with additional platform/company/board_slug rows")
+    parser.add_argument("--extra-boards", default="extra_boards.csv", help="Optional extra board CSV")
+    parser.add_argument("--scope", choices=("usuk", "worldwide"), default="usuk", help="Only US/UK eligible locations (default usuk)")
+    parser.add_argument("--roles", choices=("software-ai", "engineering", "all"), default="software-ai", help="Software engineering and AI titles by default")
+    parser.add_argument("--workplace", choices=("remote", "any"), default="remote", help="Fully remote only by default")
+    parser.add_argument("--allow-undated", action="store_true", help="Keep jobs with no public date; label undated")
+    parser.add_argument("--all-dates", action="store_true", help="Include older jobs; do not use for published-today collection")
+    parser.add_argument("--reference-date", help="Optional YYYY-MM-DD Pacific date to scan for (reproducible backfills)")
+    parser.add_argument("--workable-global", action="store_true", help="Read official worldwide Workable XML feed (only one shard)")
+    parser.add_argument("--skip-workable-boards", action="store_true", help="Exclude individual Workable company boards from sharding; pass to every shard when using global feed")
+    parser.add_argument("--shard-count", type=int, default=1, help="Rotate large board lists over N scans")
+    parser.add_argument("--shard-index", type=int, default=0, help="Zero-based index among shards")
     args = parser.parse_args()
-    if args.days < 1 or args.max_boards < 0 or args.workers < 1 or args.workers > 12:
-        parser.error("days >= 1, max-boards >= 0, and 1 <= workers <= 12 are required")
+    if args.days < 1 or args.max_boards < 0 or args.workers < 1 or args.workers > 12 or args.shard_count < 1 or not 0 <= args.shard_index < args.shard_count:
+        parser.error("days >= 1, max-boards >= 0, 1 <= workers <= 12, and 0 <= shard-index < shard-count are required")
+    if args.reference_date:
+        try:
+            ref = datetime.strptime(args.reference_date, "%Y-%m-%d").date()
+        except ValueError:
+            parser.error("--reference-date must be YYYY-MM-DD")
+    else:
+        ref = None
+    SETTINGS.update(scope=args.scope, roles=args.roles, workplace=args.workplace,
+                    allow_undated=args.allow_undated, all_dates=args.all_dates, reference_date=ref)
+    print(f"Pacific date window: {today_pacific()} (America/Los_Angeles)", flush=True)
     try:
         data = Path(args.directory).read_text(encoding="utf-8-sig") if args.directory else fetch(DIRECTORY_URL)
         boards = load_boards(data)
-        # Additional boards are configured explicitly because the default directory
-        # has mostly Greenhouse/Ashby. This avoids inventing company identifiers.
+        # Optional manual additions supplement, but do not replace, the
+        # automatically discovered worldwide directory of public boards.
         extra_path = Path(args.extra_boards)
         if extra_path.exists():
             boards.extend(load_boards(extra_path.read_text(encoding="utf-8-sig")))
@@ -504,10 +661,21 @@ def main():
     except (ValueError, KeyError, OSError, HTTPError, URLError) as exc:
         sys.exit(f"Unable to load board directory: {exc}. Pass --directory path/to/file.csv")
     boards = interleave(boards)
+    if args.workable_global or args.skip_workable_boards:
+        boards = [b for b in boards if b[0] != "workable"]
+    total = len(boards)
+    boards = [b for i, b in enumerate(boards) if i % args.shard_count == args.shard_index]
     boards = boards[:args.max_boards] if args.max_boards else boards
+    print(f"World-wide discovered company boards: {total:,}; scan shard {args.shard_index + 1}/{args.shard_count}; current batch {len(boards):,}", flush=True)
     from collections import Counter
-    print(f"Checking {len(boards)} company boards in last {args.days} calendar day(s); platforms: {dict(Counter(b[0] for b in boards))}", flush=True)
+    window = "all publication dates" if args.all_dates else f"last {args.days} calendar day(s)"
+    print(f"Checking {len(boards)} company boards ({window}); platforms: {dict(Counter(b[0] for b in boards))}", flush=True)
     found, errors = [], []
+    if args.workable_global:
+        try:
+            found.extend(jobs_workable_global(args.days))
+        except (HTTPError, URLError, TimeoutError, ET.ParseError, ValueError) as exc:
+            errors.append(f"Workable global XML: {str(exc)[:200]}")
     with ThreadPoolExecutor(max_workers=args.workers) as executor:
         futures = [executor.submit(process_board, b, args.days) for b in boards]
         for n, fut in enumerate(as_completed(futures), 1):
@@ -517,14 +685,19 @@ def main():
                 errors.append(error)
             if n % 100 == 0:
                 print(f"Checked {n}/{len(boards)} boards; candidate jobs: {len(found)}", flush=True)
-    found = sorted({(r["platform"], r["job_id"]): r for r in found}.values(),
+    found = sorted({(r["platform"], r["board_slug"], r["job_id"]): r for r in found}.values(),
                    key=lambda r: r["published_utc"], reverse=True)
-    verified = [r for r in found if not r["country"].startswith("Review")]
-    review = [r for r in found if r["country"].startswith("Review")]
+    if args.scope == "usuk" and args.workplace == "remote":
+        verified = [r for r in found if r["country"] in ("US", "UK", "US & UK")]
+        review = [r for r in found if r["country"].startswith("Review")]
+    else:
+        verified, review = [], found
     write_csv(f"{args.output}_us_uk_remote.csv", verified)
     write_csv(f"{args.output}_review_location.csv", review)
-    print(f"\nSaved {len(verified)} location-matched jobs to {args.output}_us_uk_remote.csv")
+    write_csv(f"{args.output}_remote_candidates.csv", found)
+    print(f"\nSaved {len(verified)} location-matched remote jobs to {args.output}_us_uk_remote.csv")
     print(f"Saved {len(review)} remote jobs requiring eligibility review to {args.output}_review_location.csv")
+    print(f"Saved {len(found)} remote candidates to {args.output}_remote_candidates.csv")
     print(f"Errors: {len(errors)} boards. Public API may rate-limit or remove boards.")
     Path(f"{args.output}_errors.txt").write_text("\n".join(errors) if errors else "No board errors.\n", encoding="utf-8")
     print("NOTE: Country hints are not a guarantee of hiring eligibility. Read each listing before applying.")

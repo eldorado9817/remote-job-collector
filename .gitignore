@@ -1,5 +1,10 @@
+# Only the cumulative US/UK matches should be committed.
+jobs_worldwide.csv
 jobs_us_uk_remote.csv
 jobs_review_location.csv
+jobs_remote_candidates.csv
 jobs_errors.txt
+discovered_boards.csv
+discovery_summary.json
 __pycache__/
 *.pyc
