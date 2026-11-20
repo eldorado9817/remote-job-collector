@@ -3,7 +3,9 @@ name: US and UK Remote Jobs
 on:
   workflow_dispatch:
   schedule:
-    - cron: '17 19 * * *'
+    - cron: '0 9 * * *'
+      timezone: 'America/Los_Angeles'
+    - cron: '0 17 * * *'
       timezone: 'America/Los_Angeles'
 
 permissions:
