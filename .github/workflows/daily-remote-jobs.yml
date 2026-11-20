@@ -1,0 +1,35 @@
+name: US and UK Remote Jobs
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 19 * * *'
+      timezone: 'America/Los_Angeles'
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Scan US and UK remote postings
+        run: python collect_remote_jobs.py --days 1 --max-boards 0 --workers 4
+      - name: Upload CSV results and error log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: us-uk-remote-jobs-${{ github.run_number }}
+          path: |
+            jobs_us_uk_remote.csv
+            jobs_review_location.csv
+            jobs_errors.txt
+          if-no-files-found: warn
+          retention-days: 14
