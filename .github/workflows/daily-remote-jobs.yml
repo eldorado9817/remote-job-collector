@@ -3,9 +3,12 @@ name: US + UK Remote Software and AI Jobs — Posted Today
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 9 * * *'
+    # 4:00 AM, 10:00 AM and 4:00 PM Pacific every day (follows PST/PDT automatically).
+    - cron: '0 4 * * *'
       timezone: 'America/Los_Angeles'
-    - cron: '0 17 * * *'
+    - cron: '0 10 * * *'
+      timezone: 'America/Los_Angeles'
+    - cron: '0 16 * * *'
       timezone: 'America/Los_Angeles'
 
 permissions:

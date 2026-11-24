@@ -29,11 +29,11 @@ The classifier uses public job-title and ATS location clues and is a **best-effo
 
 ## Run schedule and coverage
 
-Runs at **9:00 AM and 5:00 PM America/Los_Angeles** every day with GitHub Actions' IANA time-zone-aware cron, including PDT/PST transitions. Each run **attempts all discovered company boards** by launching **eight shards in parallel**. It does **not** scan one-eighth of boards every four days anymore. The large Workable worldwide XML is read once on shard 0. **Every shard** uses `--skip-workable-boards` to maintain identical directory indexing, preventing gaps in partitioning.
+Runs at **4:00 AM, 10:00 AM and 4:00 PM America/Los_Angeles** every day with GitHub Actions' IANA time-zone-aware cron, including PDT/PST transitions. Each run **attempts all discovered company boards** by launching **eight shards in parallel**. It does **not** scan one-eighth of boards every four days anymore. The large Workable worldwide XML is read once on shard 0. **Every shard** uses `--skip-workable-boards` to maintain identical directory indexing, preventing gaps in partitioning.
 
 Worldwide company discovery uses public directories; `extra_boards.csv` is optional. No public source indexes all employers, and sites can rate-limit, block, remove feeds or omit publication fields. Coverage and successful scan counts are NOT guaranteed. Eight parallel runners can consume **substantially more free GitHub Actions minutes**, especially on a private repository. The job matrix has a five-hour per-shard safety timeout; some runs may fail or exceed a plan's included allowance. Please monitor **Actions → Usage**.
 
-At 5 PM only jobs published up to that run are discoverable. Jobs published later in the Pacific day may be **missed** by the strict today-only filter at next day's 9 AM run; consider an optional separate backfill scan if needed. Scheduled workflows may also start late.
+At 4 PM only jobs published up to that run are discoverable. Jobs published later in the Pacific day may be **missed** by the strict today-only filter at the next day's 4 AM run; consider an optional separate backfill scan if needed. Scheduled workflows may also start late.
 
 ## Deploy to your repository
 
