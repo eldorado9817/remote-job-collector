@@ -146,7 +146,7 @@ class CombineAndHistoryTests(unittest.TestCase):
                 row = dict.fromkeys(c.FIELDS,'')
                 row.update(platform='Greenhouse',company='Company',title='AI Engineer',
                            country='UK',published_date_pt='2026-11-20',
-                           published_utc='2026-11-20T17:00:00Z', job_id='13',board_slug='acme',
+                           published_utc='2026-11-20T17:00:00Z', job_id='13',board_slug='acme',job_url='https://boards.greenhouse.io/acme/jobs/13',
                            date_source='first_published',location='Remote - UK')
                 with self.assertRaises(FileNotFoundError):
                     combine.combine(expected=2)
@@ -163,7 +163,7 @@ class CombineAndHistoryTests(unittest.TestCase):
                 merge.main()
                 out=merge.read_rows(Path('jobs_all.csv'))
                 self.assertEqual(len(out),1)
-                self.assertEqual(out[0]['collection_version'],merge.VERSION)
+                self.assertEqual(list(out[0]), merge.FIELDS)
             finally:
                 os.chdir(cwd)
 

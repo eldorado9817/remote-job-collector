@@ -8,6 +8,7 @@ date in America/Los_Angeles and US/UK location indications. Source coverage is n
 import argparse
 import csv
 import html
+import http.client
 import io
 import json
 import re
@@ -106,6 +107,14 @@ def fetch(url, retries=2, payload=None):
                 time.sleep(min(2 ** attempt + 1, 5))
                 continue
             raise
+        except (http.client.HTTPException, OSError) as exc:
+            # Truncated chunked bodies (IncompleteRead), dropped connections
+            # (RemoteDisconnected, ConnectionResetError) and similar socket errors.
+            if attempt < retries:
+                time.sleep(min(2 ** attempt + 1, 5))
+                continue
+            # Re-raise as URLError so every caller's existing handlers catch it.
+            raise URLError(f"{type(exc).__name__}: {exc}") from exc
 
 
 def get_json(url, payload=None):
@@ -579,6 +588,8 @@ def process_board(board, days):
         return rows, None
     except (ValueError, KeyError, TypeError, HTTPError, URLError, TimeoutError) as exc:
         return [], f"{platform}/{slug}: {str(exc)[:180]}"
+    except Exception as exc:  # never let one misbehaving board abort the whole shard
+        return [], f"{platform}/{slug}: unexpected {type(exc).__name__}: {str(exc)[:160]}"
 
 
 def load_boards(data):

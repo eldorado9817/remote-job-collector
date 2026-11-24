@@ -58,7 +58,7 @@ At 5 PM only jobs published up to that run are discoverable. Jobs published late
 
 Download combined daily CSVs through **Actions → successful run → Artifacts → `today-us-uk-remote-software-ai-...`**, retention 14 days. Cumulative `jobs_all.csv` remains under the repo **Code** tab. Every shard also has a short-lived diagnostic artifact.
 
-**Migration:** Earlier versions collected all occupations and/or older and undated jobs. To avoid mixing them into the new history, this version **does not carry forward** prior CSV rows that lack its `collection_version`. Back up your old `jobs_all.csv` before updating if you need it.
+**Migration:** Earlier versions collected all occupations and/or older and undated jobs. To avoid mixing them into the new history, only confirmed US/UK software/AI rows with a publication date are kept. `jobs_all.csv` has six columns: `platform, company, title, country, published_date_pt, job_url` (deduplicated by `job_url`).
 
 ## Local run (sample: first shard)
 

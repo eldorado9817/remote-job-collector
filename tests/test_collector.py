@@ -230,7 +230,7 @@ class MigrationTests(TestCase):
                 ],merger.FIELDS)
                 add_csv('jobs_us_uk_remote.csv',[
                     dict(platform='Breezy HR',company='New',title='Marketing',country='US',job_id='new',board_slug='new',date_source='unavailable')
-                ],merger.BASE_FIELDS)
+                ],collector.FIELDS)
                 merger.main()
                 rows=merger.read_rows(Path('jobs_all.csv'))
                 self.assertEqual(rows, [], 'Legacy all-role/undated rows must not be migrated into the strict software+AI published-day history')
