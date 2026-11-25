@@ -22,8 +22,9 @@ SOURCES = {
     "openats": "https://raw.githubusercontent.com/veresk06/open-ats-feed/main/actor/data/companies.json",
     "workday": "https://raw.githubusercontent.com/Riley-Dorrington/job-board-aggregator/main/data/workday_companies.json",
     "bamboohr": "https://raw.githubusercontent.com/Riley-Dorrington/job-board-aggregator/main/data/bamboohr_companies.json",
+    "lever": "https://raw.githubusercontent.com/Riley-Dorrington/job-board-aggregator/main/data/lever_companies.json",
 }
-SUPPORTED = {"greenhouse", "ashby", "workable", "smartrecruiters", "recruitee", "breezy", "workday", "bamboohr", "rippling"}
+SUPPORTED = {"greenhouse", "ashby", "workable", "smartrecruiters", "recruitee", "breezy", "workday", "bamboohr", "rippling", "lever"}
 # Rippling has no public customer directory: boards come from a committed seed list
 # (harvested from the Common Crawl URL index for ats.rippling.com) plus extra_boards.csv.
 SEED_FILES = ("rippling_boards.csv",)

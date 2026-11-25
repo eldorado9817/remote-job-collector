@@ -34,7 +34,7 @@ jobs:
         id: day
         shell: bash
         run: echo "date=$(TZ=America/Los_Angeles date +%F)" >> "$GITHUB_OUTPUT"
-      - name: Auto-discover company boards across nine ATS platforms
+      - name: Auto-discover company boards across ten ATS platforms
         run: python discover_boards.py --minimum 500
       - name: Upload directory for all scan shards
         uses: actions/upload-artifact@v4

@@ -148,6 +148,33 @@ class JobTests(TestCase):
         # One detail call per matching uuid; non-software title never fetched.
         self.assertEqual(sorted(c.rsplit('/', 1)[-1] for c in calls[1:]), ['u1', 'u3'])
 
+    def test_lever_workplace_and_eu_fallback(self):
+        from urllib.error import HTTPError
+        collector.SETTINGS.update(scope='usuk', roles='software-ai', workplace='remote')
+        now_ms = int(datetime.now(timezone.utc).timestamp() * 1000)
+        postings = [
+            dict(id='a', text='Backend Engineer', workplaceType='remote', createdAt=now_ms, country='GB',
+                 categories={'location': 'London', 'allLocations': ['London']},
+                 hostedUrl='https://jobs.lever.co/acme/a'),
+            dict(id='b', text='Backend Engineer', workplaceType='hybrid', createdAt=now_ms,
+                 categories={'location': 'Remote - US'}),
+            dict(id='c', text='Recruiter', workplaceType='remote', createdAt=now_ms,
+                 categories={'location': 'Remote - US'}),
+            dict(id='d', text='AI Engineer', workplaceType='remote', createdAt=now_ms - 5 * 86400000,
+                 categories={'location': 'Remote - US'}),
+        ]
+        def fake_get_json(url, payload=None):
+            if 'api.lever.co' in url:
+                raise HTTPError(url, 404, 'Not Found', None, None)
+            self.assertIn('api.eu.lever.co', url)
+            return postings
+        with patch.object(collector, 'get_json', side_effect=fake_get_json):
+            rows, err = collector.process_board(('lever', 'Acme', 'acme'), 1)
+        self.assertIsNone(err)
+        self.assertEqual([r['job_id'] for r in rows], ['a'])
+        self.assertEqual(rows[0]['country'], 'UK')
+        self.assertEqual(rows[0]['date_source'], 'createdAt')
+
     def test_rippling_seed_rows_are_discovered(self):
         out = {}
         discovery.add(out, 'rippling', 'Acme', 'acme-careers')

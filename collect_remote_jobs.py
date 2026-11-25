@@ -37,7 +37,7 @@ SETTINGS = {"scope": "usuk", "roles": "software-ai", "workplace": "remote", "all
 FIELDS = ["platform", "company", "title", "country", "published_local",
           "published_utc", "published_date_pt", "location", "job_url", "board_slug", "job_id", "date_source"]
 SUPPORTED = {"greenhouse", "ashby", "workable", "smartrecruiters", "recruitee",
-             "breezy", "breezyhr", "workday", "bamboohr", "rippling"}
+             "breezy", "breezyhr", "workday", "bamboohr", "rippling", "lever"}
 
 ROLE_RE = re.compile(
     r"\b(software engineer|software developer|backend|back.end|front.end|full.stack|"
@@ -501,7 +501,48 @@ def jobs_workday(company, slug, days):
     return rows
 
 
-RIPPLING_API = "https://api.rippling.com/platform/api/ats/v1/board"
+LEVER_APIS = ("https://api.lever.co/v0/postings", "https://api.eu.lever.co/v0/postings")
+
+
+def jobs_lever(company, slug, days):
+    """Lever public postings API; one call returns every posting with ``createdAt``.
+
+    ``createdAt`` (epoch ms) is when the posting was created, which can precede
+    publication: jobs can be missed, but an old job is never dated today.
+    Boards hosted in Lever's EU region 404 on the global API, so retry there.
+    """
+    jobs = None
+    for api in LEVER_APIS:
+        try:
+            jobs = get_json(f"{api}/{quote(slug)}?mode=json")
+            break
+        except HTTPError as exc:
+            if exc.code != 404 or api == LEVER_APIS[-1]:
+                raise
+    rows = []
+    for j in jobs if isinstance(jobs, list) else []:
+        title = j.get("text") or ""
+        if not role_ok(title):
+            continue
+        cats = j.get("categories") or {}
+        locations = cats.get("allLocations") or [cats.get("location") or ""]
+        created = j.get("createdAt")
+        try:
+            date = datetime.fromtimestamp(int(created) / 1000, tz=timezone.utc).isoformat() if created else ""
+        except (TypeError, ValueError, OverflowError, OSError):
+            date = ""
+        workplace = str(j.get("workplaceType") or "").lower()
+        rows += check_candidate("Lever", company, slug, dict(
+            title=title, location=" | ".join(text_location(x) for x in locations if x),
+            other_locations=j.get("country") or "",
+            description=j.get("descriptionPlain") or j.get("openingPlain") or plain(j.get("description") or ""),
+            workplace="" if workplace in ("", "unspecified") else workplace,
+            date=date, date_source="createdAt",
+            url=j.get("hostedUrl") or j.get("applyUrl"), id=j.get("id")), days)
+    return rows
+
+
+RIPPLING_API ="https://api.rippling.com/platform/api/ats/v1/board"
 
 
 def jobs_rippling(company, slug, days):
@@ -587,6 +628,7 @@ ADAPTERS = {
     "workday": jobs_workday,
     "bamboohr": jobs_bamboohr,
     "rippling": jobs_rippling,
+    "lever": jobs_lever,
 }
 
 
@@ -650,7 +692,7 @@ def load_boards(data):
 
 
 def interleave(boards):
-    buckets = {key: [] for key in ("greenhouse", "ashby", "workable", "smartrecruiters", "recruitee", "breezy", "workday", "bamboohr", "rippling")}
+    buckets = {key: [] for key in ("greenhouse", "ashby", "workable", "smartrecruiters", "recruitee", "breezy", "workday", "bamboohr", "rippling", "lever")}
     for p, name, slug in boards:
         canonical = "breezy" if p == "breezyhr" else p
         buckets[canonical].append((canonical, name, slug))

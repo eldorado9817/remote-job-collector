@@ -1,4 +1,4 @@
-# US + UK **Remote Software & AI — Published Today** (9 ATS providers)
+# US + UK **Remote Software & AI — Published Today** (10 ATS providers)
 
 GitHub Actions collector for **software engineering and AI-related openings**, **fully remote**, with a public US or UK hiring-location indication, **published on the current Pacific calendar day**. Source company boards are discovered worldwide. Jobs with unverified dates or outside-US/UK location indications are **not** included in the confirmed-today CSV.
 
@@ -14,6 +14,7 @@ GitHub Actions collector for **software engineering and AI-related openings**, *
 | Breezy HR | `published_date` | When present in the public feed. |
 | Workday | `jobPostingInfo.startDate` | Sometimes only a date (no time zone); do not invent a time. |
 | BambooHR | `datePosted` | When available on job detail. |
+| Lever | `createdAt` | One public call per board; boards hosted in Lever's EU region are retried on `api.eu.lever.co`. `workplaceType` hybrid/onsite is rejected. Creation time can precede publication, so a job published today but created earlier can be missed. |
 | Rippling | `createdOn` | From the job detail endpoint (the only timestamp exposed). Creation time can precede publication, so a job published today but created earlier is missed; an old job is never reported as today. |
 
 **Dates:** A timestamp must have a timezone to count. Its **Pacific local date** is compared to the date of the scan. A date-only field is compared as written, marked `(date only)` in `date_source`, because the ATS gives no timezone. Undated, unknown and older jobs do not appear in the confirmed-today file. Full publication-field availability and semantics vary between sites.
