@@ -1,4 +1,4 @@
-# US + UK **Remote Software & AI — Published Today** (8 ATS providers)
+# US + UK **Remote Software & AI — Published Today** (9 ATS providers)
 
 GitHub Actions collector for **software engineering and AI-related openings**, **fully remote**, with a public US or UK hiring-location indication, **published on the current Pacific calendar day**. Source company boards are discovered worldwide. Jobs with unverified dates or outside-US/UK location indications are **not** included in the confirmed-today CSV.
 
@@ -14,6 +14,7 @@ GitHub Actions collector for **software engineering and AI-related openings**, *
 | Breezy HR | `published_date` | When present in the public feed. |
 | Workday | `jobPostingInfo.startDate` | Sometimes only a date (no time zone); do not invent a time. |
 | BambooHR | `datePosted` | When available on job detail. |
+| Rippling | `createdOn` | From the job detail endpoint (the only timestamp exposed). Creation time can precede publication, so a job published today but created earlier is missed; an old job is never reported as today. |
 
 **Dates:** A timestamp must have a timezone to count. Its **Pacific local date** is compared to the date of the scan. A date-only field is compared as written, marked `(date only)` in `date_source`, because the ATS gives no timezone. Undated, unknown and older jobs do not appear in the confirmed-today file. Full publication-field availability and semantics vary between sites.
 
@@ -31,7 +32,7 @@ The classifier uses public job-title and ATS location clues and is a **best-effo
 
 Runs at **4:00 AM, 10:00 AM and 4:00 PM America/Los_Angeles** every day with GitHub Actions' IANA time-zone-aware cron, including PDT/PST transitions. Each run **attempts all discovered company boards** by launching **eight shards in parallel**. It does **not** scan one-eighth of boards every four days anymore. The large Workable worldwide XML is read once on shard 0. **Every shard** uses `--skip-workable-boards` to maintain identical directory indexing, preventing gaps in partitioning.
 
-Worldwide company discovery uses public directories; `extra_boards.csv` is optional. No public source indexes all employers, and sites can rate-limit, block, remove feeds or omit publication fields. Coverage and successful scan counts are NOT guaranteed. Eight parallel runners can consume **substantially more free GitHub Actions minutes**, especially on a private repository. The job matrix has a five-hour per-shard safety timeout; some runs may fail or exceed a plan's included allowance. Please monitor **Actions → Usage**.
+Worldwide company discovery uses public directories; `extra_boards.csv` is optional. Rippling publishes no customer directory, so its boards come from the committed `rippling_boards.csv` seed list (slugs harvested from the Common Crawl URL index for `ats.rippling.com` and checked against the public API). Add more Rippling boards there or in `extra_boards.csv` as `rippling,Company,slug`, where the slug is the path segment in `https://ats.rippling.com/<slug>/jobs`. No public source indexes all employers, and sites can rate-limit, block, remove feeds or omit publication fields. Coverage and successful scan counts are NOT guaranteed. Eight parallel runners can consume **substantially more free GitHub Actions minutes**, especially on a private repository. The job matrix has a five-hour per-shard safety timeout; some runs may fail or exceed a plan's included allowance. Please monitor **Actions → Usage**.
 
 At 4 PM only jobs published up to that run are discoverable. Jobs published later in the Pacific day may be **missed** by the strict today-only filter at the next day's 4 AM run; consider an optional separate backfill scan if needed. Scheduled workflows may also start late.
 

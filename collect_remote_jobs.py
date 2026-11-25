@@ -37,7 +37,7 @@ SETTINGS = {"scope": "usuk", "roles": "software-ai", "workplace": "remote", "all
 FIELDS = ["platform", "company", "title", "country", "published_local",
           "published_utc", "published_date_pt", "location", "job_url", "board_slug", "job_id", "date_source"]
 SUPPORTED = {"greenhouse", "ashby", "workable", "smartrecruiters", "recruitee",
-             "breezy", "breezyhr", "workday", "bamboohr"}
+             "breezy", "breezyhr", "workday", "bamboohr", "rippling"}
 
 ROLE_RE = re.compile(
     r"\b(software engineer|software developer|backend|back.end|front.end|full.stack|"
@@ -501,6 +501,47 @@ def jobs_workday(company, slug, days):
     return rows
 
 
+RIPPLING_API = "https://api.rippling.com/platform/api/ats/v1/board"
+
+
+def jobs_rippling(company, slug, days):
+    """Rippling ATS public board (ats.rippling.com/<slug>/jobs).
+
+    The list endpoint returns one row per work location and no dates, so rows are
+    grouped by uuid and the detail endpoint is read only for matching titles.
+    Detail ``createdOn`` is the only timestamp exposed. It is when the job was
+    created, which can precede publication, so this can miss jobs but never dates
+    an older job as today.
+    """
+    base = f"{RIPPLING_API}/{quote(slug)}/jobs"
+    listings = get_json(base)
+    if not isinstance(listings, list):
+        listings = (listings or {}).get("jobs") or []
+    seen, rows = set(), []
+    for listing in listings:
+        jid = listing.get("uuid")
+        if not jid or jid in seen or not role_ok(listing.get("name") or ""):
+            continue
+        seen.add(jid)
+        try:
+            detail = get_json(f"{base}/{quote(str(jid))}")
+        except (ValueError, HTTPError, URLError, TimeoutError) as exc:
+            print(f"WARNING: Rippling detail {slug}/{jid}: {str(exc)[:120]}", flush=True)
+            continue
+        desc = detail.get("description") or {}
+        if isinstance(desc, dict):
+            # Role text first: remote_ok only reads the opening of the description.
+            desc = " ".join(str(desc.get(k) or "") for k in ("role", "company"))
+        locations = detail.get("workLocations") or [(listing.get("workLocation") or {}).get("label", "")]
+        rows += check_candidate("Rippling", detail.get("companyName") or company, slug, dict(
+            title=detail.get("name") or listing.get("name"),
+            location=" | ".join(text_location(x) for x in locations if x),
+            description=desc, date=detail.get("createdOn"), date_source="createdOn",
+            url=detail.get("url") or listing.get("url") or f"https://ats.rippling.com/{slug}/jobs/{jid}",
+            id=jid), days)
+    return rows
+
+
 def jobs_workable_global(days):
     """Official Workable hourly global XML feed; stream, never load 140+MB into RAM.
 
@@ -545,6 +586,7 @@ ADAPTERS = {
     "breezyhr": jobs_breezy,
     "workday": jobs_workday,
     "bamboohr": jobs_bamboohr,
+    "rippling": jobs_rippling,
 }
 
 
@@ -608,7 +650,7 @@ def load_boards(data):
 
 
 def interleave(boards):
-    buckets = {key: [] for key in ("greenhouse", "ashby", "workable", "smartrecruiters", "recruitee", "breezy", "workday", "bamboohr")}
+    buckets = {key: [] for key in ("greenhouse", "ashby", "workable", "smartrecruiters", "recruitee", "breezy", "workday", "bamboohr", "rippling")}
     for p, name, slug in boards:
         canonical = "breezy" if p == "breezyhr" else p
         buckets[canonical].append((canonical, name, slug))

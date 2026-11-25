@@ -61,7 +61,7 @@ class DirectoryTests(TestCase):
                     return value
             raise ValueError(url)
         with patch.dict(discovery.SOURCES, {k:'https://example.com/'+u.split('/')[-1] for k,u in discovery.SOURCES.items()}, clear=True):
-            boards = discovery.build(fetcher=fake_fetch, extra_path=None)
+            boards = discovery.build(fetcher=fake_fetch, extra_path=None, seed_paths=())
         self.assertEqual(len(boards), 4)
 
 
@@ -111,6 +111,48 @@ class JobTests(TestCase):
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]['platform'], 'Workable')
         self.assertEqual(rows[0]['job_id'], 'A1')
+
+
+    def test_rippling_groups_locations_and_reads_detail(self):
+        collector.SETTINGS.update(scope='usuk', roles='software-ai', workplace='remote')
+        now = datetime.now(timezone.utc).isoformat(timespec='seconds')
+        listing = [
+            dict(uuid='u1', name='Senior Software Engineer', url='https://ats.rippling.com/acme/jobs/u1',
+                 workLocation={'label': 'New York, NY'}),
+            dict(uuid='u1', name='Senior Software Engineer', url='https://ats.rippling.com/acme/jobs/u1',
+                 workLocation={'label': 'Remote (United States)'}),
+            dict(uuid='u2', name='Account Executive', workLocation={'label': 'Remote (United States)'}),
+            dict(uuid='u3', name='ML Engineer', workLocation={'label': 'Hybrid (London, UK)'}),
+        ]
+        details = {
+            'u1': dict(uuid='u1', name='Senior Software Engineer', companyName='Acme Inc',
+                       workLocations=['New York, NY', 'Remote (United States)'], createdOn=now,
+                       description={'role': '<p>Build things</p>', 'company': 'About Acme'},
+                       url='https://ats.rippling.com/acme/jobs/u1'),
+            'u3': dict(uuid='u3', name='ML Engineer', workLocations=['Hybrid (London, UK)'], createdOn=now),
+        }
+        calls = []
+        def fake_get_json(url, payload=None):
+            calls.append(url)
+            if url.endswith('/board/acme/jobs'):
+                return listing
+            return details[url.rsplit('/', 1)[-1]]
+        with patch.object(collector, 'get_json', side_effect=fake_get_json):
+            rows, err = collector.process_board(('rippling', 'acme', 'acme'), 1)
+        self.assertIsNone(err)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['platform'], 'Rippling')
+        self.assertEqual(rows[0]['company'], 'Acme Inc')
+        self.assertEqual(rows[0]['country'], 'US')
+        self.assertEqual(rows[0]['date_source'], 'createdOn')
+        # One detail call per matching uuid; non-software title never fetched.
+        self.assertEqual(sorted(c.rsplit('/', 1)[-1] for c in calls[1:]), ['u1', 'u3'])
+
+    def test_rippling_seed_rows_are_discovered(self):
+        out = {}
+        discovery.add(out, 'rippling', 'Acme', 'acme-careers')
+        discovery.add(out, 'rippling', 'Bad', '../etc')
+        self.assertEqual(list(out), [('rippling', 'acme-careers')])
 
 
 if __name__ == '__main__':

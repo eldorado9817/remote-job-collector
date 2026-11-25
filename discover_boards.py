@@ -23,7 +23,10 @@ SOURCES = {
     "workday": "https://raw.githubusercontent.com/Riley-Dorrington/job-board-aggregator/main/data/workday_companies.json",
     "bamboohr": "https://raw.githubusercontent.com/Riley-Dorrington/job-board-aggregator/main/data/bamboohr_companies.json",
 }
-SUPPORTED = {"greenhouse", "ashby", "workable", "smartrecruiters", "recruitee", "breezy", "workday", "bamboohr"}
+SUPPORTED = {"greenhouse", "ashby", "workable", "smartrecruiters", "recruitee", "breezy", "workday", "bamboohr", "rippling"}
+# Rippling has no public customer directory: boards come from a committed seed list
+# (harvested from the Common Crawl URL index for ats.rippling.com) plus extra_boards.csv.
+SEED_FILES = ("rippling_boards.csv",)
 SLUG = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,120}$")
 WORKDAY_TENANT = re.compile(r"^wd\d+$", re.I)
 
@@ -131,7 +134,12 @@ def fetch(url):
         return response.read().decode("utf-8-sig")
 
 
-def build(fetcher=fetch, extra_path="extra_boards.csv", failures=None):
+def read_local(out, path):
+    for row in csv.DictReader(Path(path).open(encoding="utf-8-sig", newline="")):
+        add(out, row.get("platform") or row.get("ats"), row.get("company") or row.get("company_name"), row.get("board_slug") or row.get("slug"))
+
+
+def build(fetcher=fetch, extra_path="extra_boards.csv", failures=None, seed_paths=SEED_FILES):
     failures = failures if failures is not None else []
     out = {}
     for source, url in SOURCES.items():
@@ -147,9 +155,15 @@ def build(fetcher=fetch, extra_path="extra_boards.csv", failures=None):
         except Exception as error:
             failures.append(f"{source}: {type(error).__name__}: {str(error)[:160]}")
             print(f"WARNING: {failures[-1]}", flush=True)
+    for seed in seed_paths:
+        if Path(seed).is_file():
+            before = len(out)
+            read_local(out, seed)
+            print(f"Loaded {len(out) - before:,} new entries from {seed}", flush=True)
+        else:
+            failures.append(f"{seed}: seed file missing")
     if extra_path and Path(extra_path).is_file():
-        for row in csv.DictReader(Path(extra_path).open(encoding="utf-8-sig", newline="")):
-            add(out, row.get("platform") or row.get("ats"), row.get("company") or row.get("company_name"), row.get("board_slug") or row.get("slug"))
+        read_local(out, extra_path)
     return sorted(out.values(), key=lambda x: (x[0], x[2].lower()))
 
 
