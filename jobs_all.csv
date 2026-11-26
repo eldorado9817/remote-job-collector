@@ -1,4 +1,24 @@
 ﻿platform,company,title,country,published_date_pt,job_url
+SmartRecruiters,John Snow Labs,"Healthcare Data Scientist (Remote, International)",US,2026-11-26,https://jobs.smartrecruiters.com/JohnSnowLabs/744000163922429
+Lever,pointclickcare,Principal Software Engineer,US,2026-11-26,https://jobs.lever.co/pointclickcare/4b3d7d51-2a0c-4447-8d74-fc659c63894f
+Ashby,clickhouse,Senior Backend Engineer - ClickPipes Platform,UK,2026-11-26,https://jobs.ashbyhq.com/clickhouse/5d974c58-7b42-4a5b-bb85-419e45e51d3b
+Ashby,jerry.ai,Senior Data Scientist (growth-stage startup),US,2026-11-26,https://jobs.ashbyhq.com/Jerry.ai/263b19da-29af-4d85-a1b5-e2b5d08a32ac
+Ashby,jerry.ai,Staff Data Scientist (growth-stage startup),US,2026-11-26,https://jobs.ashbyhq.com/Jerry.ai/a8b9ff6d-5b8f-4f47-aef2-3e918ac3eef6
+SmartRecruiters,John Snow Labs,"Healthcare Data Scientist (Remote, International)",UK,2026-11-26,https://jobs.smartrecruiters.com/JohnSnowLabs/744000163918439
+SmartRecruiters,Jobs for Humanity,Copy of Data Scientist,US,2026-11-26,https://jobs.smartrecruiters.com/JobsForHumanity/744000163911479
+Ashby,hiverge,Account Executive - R&D and AI infrastructure,US,2026-11-26,https://jobs.ashbyhq.com/hiverge/fd8d8d4a-038f-44d7-b70f-af9dc5bcb30b
+Ashby,clera,Principal AI Architect,US,2026-11-26,https://jobs.ashbyhq.com/Clera/384aa86a-a1d3-4b16-8561-edeec63a18b8
+Ashby,masabi,"Data Engineer, AI & Analytics (FTC)",UK,2026-11-26,https://jobs.ashbyhq.com/masabi/2116054b-a9c9-482f-8ee2-84add76cefd0
+Ashby,lilt-production,AI Training Contributor - Welsh - Remote,UK,2026-11-26,https://jobs.ashbyhq.com/lilt-production/4a8527ac-d140-4044-b0e7-37f0df30bfe8
+Breezy HR,synergetics,"Software Engineer, Cloud Platform",US,2026-11-26,https://synergetics.breezy.hr/p/ce34915f7090-software-engineer-cloud-platform
+Ashby,masabi,AI Engineer (FTC),UK,2026-11-26,https://jobs.ashbyhq.com/masabi/f24e5f28-c300-489b-aac8-ea388805ebde
+Breezy HR,social-discovery-ventures,Senior AI Content Specialist,US & UK,2026-11-26,https://social-discovery-ventures.breezy.hr/p/4d65647294b301-senior-ai-content-specialist
+Breezy HR,daintta-ltd,Systems Engineer Analyst,UK,2026-11-26,https://daintta-ltd.breezy.hr/p/11dd81de2b1801-systems-engineer-analyst
+Lever,smiledigitalhealth,Senior Full Stack Developer (Remote US),US,2026-11-26,https://jobs.lever.co/smiledigitalhealth/70a2d159-2203-47f6-a03f-25c50f76656b
+Ashby,obsidiansystems,Functional Software Engineer,UK,2026-11-26,https://jobs.ashbyhq.com/obsidiansystems/0a44c74d-4519-4cce-9596-dd75c5ecbdd5
+Ashby,synthesia,Staff SecOps Security Engineer,US,2026-11-26,https://jobs.ashbyhq.com/synthesia/c3c79cb1-3ead-46ac-abf2-04502e4655bd
+Lever,jobgether,Senior Back-end Engineer - Typescript/NodeJS,UK,2026-11-26,https://jobs.lever.co/jobgether/e6b35733-4c52-48d5-a106-1aa99e36e8dc
+Lever,jobgether,Tech Lead/Software Engineer III - PDC,US,2026-11-26,https://jobs.lever.co/jobgether/6fd9ca5d-b358-4573-87f8-399ec3fc5682
 Ashby,matter-labs,"Software Engineer, Node",US,2026-11-26,https://jobs.ashbyhq.com/matter-labs/23235c26-230f-42fe-a538-1a82dc18ca92
 Lever,jobgether,Sr Data Platform Engineer,UK,2026-11-26,https://jobs.lever.co/jobgether/bacd73cf-a175-4932-b8b8-1ea67cea3f97
 Ashby,radiant,HPC Infrastructure Site Reliability Engineer,UK,2026-11-26,https://jobs.ashbyhq.com/radiant/f7f1e19e-80e3-442b-a6ea-b6a0f6cf6e1e
@@ -22,9 +42,9 @@ Lever,jobgether,Full Stack Web & eCommerce Engineer,US,2026-11-26,https://jobs.l
 Workday,crowdstrike,Sr. Software Engineer - Mac Sensor (Remote),US,2026-11-26,https://crowdstrike.wd5.myworkdayjobs.com/crowdstrikecareers/job/USA---Remote-CA/Sr-Mac-Sensor-Engineer--Hybrid-_R30143
 Workday,crowdstrike,"Vice President, AI Architect (Remote)",US,2026-11-26,https://crowdstrike.wd5.myworkdayjobs.com/crowdstrikecareers/job/USA---Remote/Vice-President--AI-Architect--Remote-_R30285
 Workday,pfizer,"Manager, Data Science and AI",UK,2026-11-26,https://pfizer.wd1.myworkdayjobs.com/pfizercareers/job/Netherlands---Capelle-Ad-Ijssel/Manager--Data-Science-and-AI_4968229
+Workday,nvidia,AI Infrastructure Engineer - NVIS,US,2026-11-26,https://nvidia.wd5.myworkdayjobs.com/nvidiaexternalcareersite/job/US-TX-Remote/AI-Infrastructure-Engineer---NVIS_JR2030522
 Workday,pfizer,"Manager, Data Science and AI",UK,2026-11-26,https://pfizer.wd1.myworkdayjobs.com/internaljobs/job/Netherlands---Capelle-Ad-Ijssel/Manager--Data-Science-and-AI_4968229-2
 Lever,jobgether,Principal Software Development Engineer in Test (AI-Driven Quality Engineering),UK,2026-11-25,https://jobs.lever.co/jobgether/9f75f976-75a1-4b98-8761-b82c215e99f6
-Breezy HR,synergetics,"Software Engineer, Cloud Platform",US,2026-11-25,https://synergetics.breezy.hr/p/ce34915f7090-software-engineer-cloud-platform
 Lever,jobgether,Engineering Team Lead - AI First,UK,2026-11-25,https://jobs.lever.co/jobgether/cfbc2c2d-367b-455c-8472-290ab274a2c6
 Ashby,runpod,Software Engineer (Full-Stack) - Multiple Levels,US,2026-11-25,https://jobs.ashbyhq.com/runpod/d7c53f7a-ce66-4ecb-91f6-75b1565d4d62
 Ashby,clickhouse,Sr. Software Engineer - Control Plane Platform,US,2026-11-25,https://jobs.ashbyhq.com/clickhouse/6ac48ac0-de03-4897-b956-b6567493d44b
@@ -307,7 +327,6 @@ Greenhouse,cribl,"Staff Software Engineer, Control Plane",US,2026-11-23,https://
 Breezy HR,ontrac-solutions-llc,Senior GCP Platform Engineer – FedRAMP / High-Security Environments,US,2026-11-23,https://ontrac-solutions-llc.breezy.hr/p/c749cfa98959-senior-gcp-platform-engineer-fedramp-high-security-environments
 Greenhouse,instacart,"Senior Software Engineer II, Pricing & Incentives (Fulfillment)",US,2026-11-23,https://instacart.careers/job/?gh_jid=8412255
 Greenhouse,smartsheet,"Software Engineer II, AI Experience (Remote Eligible)",US,2026-11-23,https://job-boards.greenhouse.io/smartsheet/jobs/8412232
-Breezy HR,daintta-ltd,Systems Engineer Analyst,UK,2026-11-23,https://daintta-ltd.breezy.hr/p/11dd81de2b1801-systems-engineer-analyst
 Greenhouse,smartsheet,"Senior Software Engineer I, Agent Engineering (Remote Eligible)",US,2026-11-23,https://job-boards.greenhouse.io/smartsheet/jobs/8412206
 Greenhouse,constantcontact,"Principal Product Manager - Messaging, SMS (AI-First)",US,2026-11-23,https://job-boards.greenhouse.io/constantcontact/jobs/8384239
 Greenhouse,toast,"Software Engineer II, Consumer",US,2026-11-23,https://careers.toasttab.com/jobs?gh_jid=8164283
@@ -490,7 +509,6 @@ Greenhouse,zoominfo,Senior SEO & AI Search Manager,UK,2026-11-20,https://www.zoo
 Ashby,focus,Senior Test Software Engineer,US,2026-11-20,https://jobs.ashbyhq.com/focus/54a1b832-7a46-4d7f-9bb8-6b6158d96559
 Ashby,sentilink,"Senior Cloud Security Engineer, FedRAMP",US,2026-11-20,https://jobs.ashbyhq.com/sentilink/99060cec-96a4-49aa-8d51-099e2ca8bb5f
 Ashby,sentilink,"Senior Software Engineer, Product Security",US,2026-11-20,https://jobs.ashbyhq.com/sentilink/1259909b-5c6a-4533-8e43-38d89a950e66
-Breezy HR,social-discovery-ventures,Senior AI Content Specialist,US & UK,2026-11-20,https://social-discovery-ventures.breezy.hr/p/4d65647294b301-senior-ai-content-specialist
 Ashby,sentilink,"Staff Software Engineer, Product Security",US,2026-11-20,https://jobs.ashbyhq.com/sentilink/b3ad3110-4217-478a-8763-efd40869c4e6
 Ashby,clickup,"Senior Backend Engineer, Identity and Access Management",US,2026-11-20,https://jobs.ashbyhq.com/clickup/8164d7f3-e6e6-428c-ae41-ac3b642866f5
 Workable,Mindrift,Record Videos at Home for AI - $70 One-Time Task,US,2026-11-20,https://apply.workable.com/j/FD95A0325A
