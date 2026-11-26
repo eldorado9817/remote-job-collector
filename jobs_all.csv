@@ -1,4 +1,28 @@
 ﻿platform,company,title,country,published_date_pt,job_url
+Ashby,matter-labs,"Software Engineer, Node",US,2026-11-26,https://jobs.ashbyhq.com/matter-labs/23235c26-230f-42fe-a538-1a82dc18ca92
+Lever,jobgether,Sr Data Platform Engineer,UK,2026-11-26,https://jobs.lever.co/jobgether/bacd73cf-a175-4932-b8b8-1ea67cea3f97
+Ashby,radiant,HPC Infrastructure Site Reliability Engineer,UK,2026-11-26,https://jobs.ashbyhq.com/radiant/f7f1e19e-80e3-442b-a6ea-b6a0f6cf6e1e
+Ashby,radiant,Platform Site Reliability Engineer,UK,2026-11-26,https://jobs.ashbyhq.com/radiant/084e5679-435e-4bd4-9a36-a17f5d47d574
+Lever,jobgether,Principal SRE Engineer (EKS) - Remote (San Francisco Bay Area),US,2026-11-26,https://jobs.lever.co/jobgether/a2e88851-65af-4ec0-80a2-54521857a76c
+Lever,jobgether,Principal SRE Engineer (EKS) - Remote (Boston),US,2026-11-26,https://jobs.lever.co/jobgether/ee7431ea-9166-479d-b50f-d00805f7b5ab
+Lever,jobgether,Principal SRE Engineer (EKS) - Remote (Austin),US,2026-11-26,https://jobs.lever.co/jobgether/709d3503-6ea3-4a17-a86d-5f8cde1f9684
+Lever,jobgether,Principal SRE Engineer (EKS) - Remote (Atlanta),US,2026-11-26,https://jobs.lever.co/jobgether/b680d8b7-d7fb-45a8-8272-1cd4ba5627e0
+Lever,jobgether,Principal SRE Engineer (EKS),US,2026-11-26,https://jobs.lever.co/jobgether/7c9c19a4-de6a-4292-a073-c295006e142e
+SmartRecruiters,Miratech,Senior Full-Stack Java Engineer (CX domain),US,2026-11-26,https://jobs.smartrecruiters.com/Miratech1/744000163850349
+SmartRecruiters,Miratech,Senior Full-Stack Java Engineer (CX domain),US,2026-11-26,https://jobs.smartrecruiters.com/Miratech1/744000163850254
+SmartRecruiters,Miratech,Senior Full-Stack Java Engineer (CX domain),US,2026-11-26,https://jobs.smartrecruiters.com/Miratech1/744000163850149
+SmartRecruiters,Miratech,Senior Full-Stack Java Engineer (CX domain),US,2026-11-26,https://jobs.smartrecruiters.com/Miratech1/744000163850079
+SmartRecruiters,Miratech,Senior Full-Stack Java Engineer (CX domain),US,2026-11-26,https://jobs.smartrecruiters.com/Miratech1/744000163847091
+SmartRecruiters,Miratech,Senior Full-Stack Java Engineer (CX domain),US,2026-11-26,https://jobs.smartrecruiters.com/Miratech1/744000163849856
+SmartRecruiters,Miratech,Senior Full-Stack Java Engineer (CX domain),US,2026-11-26,https://jobs.smartrecruiters.com/Miratech1/744000163847197
+Recruitee,tether,AI Research Engineer (Multi-Modal Agents),UK,2026-11-26,https://tether.recruitee.com/o/ai-research-engineer-multi-modal-agents
+Breezy HR,activate-group-limited,Senior Platform Engineer,UK,2026-11-26,https://activate-group-limited.breezy.hr/p/19450525ab1001-senior-platform-engineer
+Ashby,kraken.com,Senior Software Engineer – AI Infrastructure,UK,2026-11-26,https://jobs.ashbyhq.com/kraken.com/ef4b731a-ae75-4e60-a9df-96eaf5aa31eb
+Lever,jobgether,Full Stack Web & eCommerce Engineer,US,2026-11-26,https://jobs.lever.co/jobgether/91f5a1f0-3173-4564-aec1-16ae06d324ce
+Workday,crowdstrike,Sr. Software Engineer - Mac Sensor (Remote),US,2026-11-26,https://crowdstrike.wd5.myworkdayjobs.com/crowdstrikecareers/job/USA---Remote-CA/Sr-Mac-Sensor-Engineer--Hybrid-_R30143
+Workday,crowdstrike,"Vice President, AI Architect (Remote)",US,2026-11-26,https://crowdstrike.wd5.myworkdayjobs.com/crowdstrikecareers/job/USA---Remote/Vice-President--AI-Architect--Remote-_R30285
+Workday,pfizer,"Manager, Data Science and AI",UK,2026-11-26,https://pfizer.wd1.myworkdayjobs.com/pfizercareers/job/Netherlands---Capelle-Ad-Ijssel/Manager--Data-Science-and-AI_4968229
+Workday,pfizer,"Manager, Data Science and AI",UK,2026-11-26,https://pfizer.wd1.myworkdayjobs.com/internaljobs/job/Netherlands---Capelle-Ad-Ijssel/Manager--Data-Science-and-AI_4968229-2
 Lever,jobgether,Principal Software Development Engineer in Test (AI-Driven Quality Engineering),UK,2026-11-25,https://jobs.lever.co/jobgether/9f75f976-75a1-4b98-8761-b82c215e99f6
 Breezy HR,synergetics,"Software Engineer, Cloud Platform",US,2026-11-25,https://synergetics.breezy.hr/p/ce34915f7090-software-engineer-cloud-platform
 Lever,jobgether,Engineering Team Lead - AI First,UK,2026-11-25,https://jobs.lever.co/jobgether/cfbc2c2d-367b-455c-8472-290ab274a2c6
@@ -28,7 +52,6 @@ Ashby,securebio,"Data Scientist / Senior Data Scientist, AI Policy",US,2026-11-2
 Greenhouse,coinbase,"Staff Software Engineer, Native Mobile",US,2026-11-25,https://www.coinbase.com/careers/positions/8417596?gh_jid=8417596
 Greenhouse,coinbase,"Senior Staff Software Engineer, Native Mobile",US,2026-11-25,https://www.coinbase.com/careers/positions/8417588?gh_jid=8417588
 Ashby,krakentech,Senior Full Stack Engineer,UK,2026-11-25,https://jobs.ashbyhq.com/krakentech/c45cbe85-4080-4fae-a35b-8113ece4917f
-Breezy HR,activate-group-limited,Senior Platform Engineer,UK,2026-11-25,https://activate-group-limited.breezy.hr/p/19450525ab1001-senior-platform-engineer
 SmartRecruiters,Travoom,Principal AI translation architect 200 languages Rust,US,2026-11-25,https://jobs.smartrecruiters.com/Travoom/744000163727700
 Greenhouse,mozilla,Staff Marketing Data Scientist,US,2026-11-25,https://job-boards.greenhouse.io/mozilla/jobs/8265977
 Lever,bluesight,Senior Data Engineer,US,2026-11-25,https://jobs.lever.co/bluesight/eb53be34-14ee-4bec-9edb-bcd65136c989
