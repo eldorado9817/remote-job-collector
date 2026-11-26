@@ -1,9 +1,15 @@
 ﻿platform,company,title,country,published_date_pt,job_url
+Breezy HR,synergetics,"Software Engineer, Cloud Platform",US,2026-11-25,https://synergetics.breezy.hr/p/ce34915f7090-software-engineer-cloud-platform
+Ashby,runpod,Software Engineer (Full-Stack) - Multiple Levels,US,2026-11-25,https://jobs.ashbyhq.com/runpod/d7c53f7a-ce66-4ecb-91f6-75b1565d4d62
+Ashby,clickhouse,Sr. Software Engineer - Control Plane Platform,US,2026-11-25,https://jobs.ashbyhq.com/clickhouse/6ac48ac0-de03-4897-b956-b6567493d44b
+SmartRecruiters,Grantek Systems Integration,Systems Engineer,US,2026-11-25,https://jobs.smartrecruiters.com/GrantekSystemsIntegration/744000163764749
+Breezy HR,reveleer,"Senior Product Manager, HIE, AI Suspecting, and Care Gap Management",US,2026-11-25,https://reveleer.breezy.hr/p/af4b2e0855a8-senior-product-manager-hie-ai-suspecting-and-care-gap-management
 Ashby,chartis,"Solution Architect, Revenue Cycle Transformation (Epic Front-End Revenue Cycle)",US,2026-11-25,https://jobs.ashbyhq.com/chartis/083ea67f-05ae-455d-aca4-e749b52d8173
-Lever,valdera,GTM AI & Engineering Lead,US,2026-11-25,https://jobs.lever.co/valdera/b8795fe3-4b55-4d83-b8ea-0582c4ae866a
+Lever,valdera,GTM AI Lead,US,2026-11-25,https://jobs.lever.co/valdera/b8795fe3-4b55-4d83-b8ea-0582c4ae866a
 Rippling,Abax Health,Software Engineer (Remote),US,2026-11-25,https://ats.rippling.com/abax-health/jobs/421b62f3-1f9e-46ef-959f-0bdca1232951
 Ashby,paxos,"Senior Software Engineer, Liquidity",US,2026-11-25,https://jobs.ashbyhq.com/paxos/f47d560e-02eb-48e0-b6f9-3b8c66e031bb
 Ashby,sequen-ai,Staff Data Engineer – RRI Data,US,2026-11-25,https://jobs.ashbyhq.com/sequen-ai/aa82c407-36ea-4663-add8-345e83c5e1be
+Greenhouse,discord,"Senior Software Engineer, Enterprise Platform",US,2026-11-25,https://job-boards.greenhouse.io/discord/jobs/8958889002
 Ashby,render,"Software Engineer, Cloud Infrastructure",US,2026-11-25,https://jobs.ashbyhq.com/render/a22230e6-803d-4e2e-82f8-ff5f500cdc3d
 SmartRecruiters,PSI CRO,Software Developer in Test,UK,2026-11-25,https://jobs.smartrecruiters.com/PSICRO/744000163754630
 Ashby,gravie,Staff Security Engineer,US,2026-11-25,https://jobs.ashbyhq.com/gravie/4bfe0e55-204b-4152-8358-95e3267adc58
@@ -14,10 +20,14 @@ Ashby,assured,"Product Design Lead, AI Workflows/Decisioning",US,2026-11-25,http
 Ashby,jerry.ai,Senior Data Scientist (growth-stage startup),US,2026-11-25,https://jobs.ashbyhq.com/Jerry.ai/312844bc-5e59-4ad7-8b4a-99281bafef3e
 SmartRecruiters,Travoom,Principal Backend Architect – Rust & Distributed Systems,US,2026-11-25,https://jobs.smartrecruiters.com/Travoom/744000163742011
 Ashby,gc-ai,"Head of Legal AI Education, GC AI Academy",US,2026-11-25,https://jobs.ashbyhq.com/gc-ai/875e6bc0-3875-43e2-be72-5e4e37c1ba2d
+Greenhouse,coinbase,"Senior Software Engineer, Native Mobile",US,2026-11-25,https://www.coinbase.com/careers/positions/8417630?gh_jid=8417630
 Ashby,securebio,"Data Scientist / Senior Data Scientist, AI Policy",US,2026-11-25,https://jobs.ashbyhq.com/securebio/b645ce1e-7ed4-432d-aa91-cdd5da9527a9
+Greenhouse,coinbase,"Staff Software Engineer, Native Mobile",US,2026-11-25,https://www.coinbase.com/careers/positions/8417596?gh_jid=8417596
+Greenhouse,coinbase,"Senior Staff Software Engineer, Native Mobile",US,2026-11-25,https://www.coinbase.com/careers/positions/8417588?gh_jid=8417588
 Ashby,krakentech,Senior Full Stack Engineer,UK,2026-11-25,https://jobs.ashbyhq.com/krakentech/c45cbe85-4080-4fae-a35b-8113ece4917f
 Breezy HR,activate-group-limited,Senior Platform Engineer,UK,2026-11-25,https://activate-group-limited.breezy.hr/p/19450525ab1001-senior-platform-engineer
 SmartRecruiters,Travoom,Principal AI translation architect 200 languages Rust,US,2026-11-25,https://jobs.smartrecruiters.com/Travoom/744000163727700
+Greenhouse,mozilla,Staff Marketing Data Scientist,US,2026-11-25,https://job-boards.greenhouse.io/mozilla/jobs/8265977
 Lever,bluesight,Senior Data Engineer,US,2026-11-25,https://jobs.lever.co/bluesight/eb53be34-14ee-4bec-9edb-bcd65136c989
 Lever,bluesight,Data Engineer,US,2026-11-25,https://jobs.lever.co/bluesight/8a3408a8-6909-4b66-92c1-98a5c80ba0a9
 Greenhouse,launchdarkly,GTM AI Engineer,US,2026-11-25,https://job-boards.greenhouse.io/launchdarkly/jobs/8217232003
@@ -64,14 +74,21 @@ Workday,crowdstrike,DevOps Engineer (Remote),US,2026-11-25,https://crowdstrike.w
 Workday,db,Java Engineer - Fixed Income Pricing and Analytics - Vice President,US,2026-11-25,https://db.wd3.myworkdayjobs.com/dbwebsite/job/New-York-1-Columbus-Circle/Java-Engineer---Fixed-Income-Pricing-and-Analytics---Vice-President_R0451310-1
 Workday,blackbaud,Principal Data Scientist,US,2026-11-25,https://blackbaud.wd1.myworkdayjobs.com/externalcareers/job/Remote---Anywhere---USA/Principal-Data-Scientist_R0014900
 Workday,cerence,Principal/Senior AI Engineer - Audio AI: Audio Intelligence for Robotics and Automation,US,2026-11-25,https://cerence.wd5.myworkdayjobs.com/cerence/job/Remote---USA/Principal-Senior-AI-Engineer---Audio-AI--Audio-Intelligence-for-Robotics-and-Automation_R0006050
+Workday,circle,"Manager, Software Engineering, Platform Engineering",US,2026-11-25,https://circle.wd1.myworkdayjobs.com/circle/job/San-Francisco---remote-first-in-US/Manager--Software-Engineering--Platform-Engineering_JR100344
 Workday,erpa,AI Engineer – Generative AI and Agentic Systems,US,2026-11-25,https://erpa.wd12.myworkdayjobs.com/erpa/job/USA-IL-Remote/AI-Engineer---Generative-AI-and-Agentic-Systems_R1088
+Workday,gehc,"Director, AI Transformation",US,2026-11-25,https://gehc.wd5.myworkdayjobs.com/gehc_externalsite/job/Remote/Director--AI-Transformation_R4049535-1
 Workday,kiongroup,"Software Engineer, Technical Suport -- Night Shift",US,2026-11-25,https://kiongroup.wd3.myworkdayjobs.com/kion_scs/job/Grand-Rapids-MI-United-States/Software-Engineer--Technical-Suport----Night-Shift_JR-0099408
+Workday,salesforce,"Applied AI Architect, Governance & Trust",US,2026-11-25,https://salesforce.wd12.myworkdayjobs.com/external_career_site/job/New-York---New-York/Applied-AI-Architect--Governance---Trust_JR369324
+Workday,shi,Sr. Cloud Engineer,US,2026-11-25,https://shi.wd12.myworkdayjobs.com/shicareers/job/US---TX---Home-Office/Sr-Cloud-Engineer_JR2295
+Workday,shi,Sr. Data Engineer,US,2026-11-25,https://shi.wd12.myworkdayjobs.com/shicareers/job/US---Remote/Sr-Data-Engineer_JR2731
 Workday,avnet,Security Engineer,UK,2026-11-25,https://avnet.wd1.myworkdayjobs.com/external/job/Leeds-United-Kingdom/Security-Engineer-II_JR-024521
 Workday,redhat,Senior AI Platform Specialist Solution Architect,US,2026-11-25,https://redhat.wd5.myworkdayjobs.com/jobs/job/Remote-US-CA/Senior-AI-Platform-Specialist-Solution-Architect_R-060418-1
 Workday,tempus,"Director, Strategy & Operations - Life Sciences AI Products",US,2026-11-25,https://tempus.wd5.myworkdayjobs.com/tempus_careers/job/Remote---California/Director--Strategy---Operations---Life-Sciences-AI-Products_JR202601135
 Workday,bbinsurance,"Director, AI & Security Development",US,2026-11-25,https://bbinsurance.wd1.myworkdayjobs.com/careers/job/Remote---USA/Director--AI---Security-Development_R26_0000002016
 Workday,motorolasolutions,Coverage Test Center Senior Technical Lead,US,2026-11-25,https://motorolasolutions.wd5.myworkdayjobs.com/careers/job/Illinois-Remote-Work/Coverage-Test-Center-Senior-Technical-Lead_R68467
 Workday,motorolasolutions,Systems Engineer - Cybersecurity Deployment,US,2026-11-25,https://motorolasolutions.wd5.myworkdayjobs.com/careers/job/Illinois-Remote-Work/Systems-Engineer---Cybersecurity-Deployment_R69773
+Workday,nvidia,Senior Applied Research Scientist – AI Native Numerical Methods,US,2026-11-25,https://nvidia.wd5.myworkdayjobs.com/nvidiaexternalcareersite/job/US-CA-Remote/Senior-Applied-Research-Scientist---AI-Native-Numerical-Methods_JR2030637
+Workday,nvidia,"Senior Machine Learning Engineer, User Simulation and Advanced Synthetic Data Generation",US,2026-11-25,https://nvidia.wd5.myworkdayjobs.com/nvidiaexternalcareersite/job/US-CA-Santa-Clara/Senior-Machine-Learning-Engineer--User-Simulation-and-Advanced-Synthetic-Data-Generation_JR2030505
 Workday,nvidia,Senior Software Developer - Autonomous Vehicles,US,2026-11-25,https://nvidia.wd5.myworkdayjobs.com/nvidiaexternalcareersite/job/US-CA-Santa-Clara/Senior-Software-Developer---Autonomous-Vehicles_JR2030353
 Workday,nvidia,"Manager, Systems Software Engineering - GPU",US,2026-11-25,https://nvidia.wd5.myworkdayjobs.com/nvidiaexternalcareersite/job/US-CA-Santa-Clara/Manager--Systems-Software-Engineering---GPU_JR2028913
 Workday,nvidia,"Principal Systems Engineer, Datacenter Interconnects and Fabric Health",US,2026-11-25,https://nvidia.wd5.myworkdayjobs.com/nvidiaexternalcareersite/job/US-CA-Santa-Clara/Principal-Systems-Engineer--Datacenter-Interconnects-and-Fabric-Health_JR2029160
@@ -87,6 +104,7 @@ Workday,gartner,Sr Director Analyst – AI in Sales Enablement (Remote U.S.),US,
 Workday,gartner,"Sr Director Analyst – AI in Sales Enablement (Remote: UK, Ireland, Malta))",UK,2026-11-25,https://gartner.wd5.myworkdayjobs.com/ext/job/Remote---United-Kingdom/Director-Analyst---AI-in-Sales-Enablement--Remote--UK-_115288-1
 Workday,gilead,AI Product Owner – Digital Content,US,2026-11-25,https://gilead.wd1.myworkdayjobs.com/gileadhotjobcareers/job/United-States---California---Foster-City/AI-Product-Owner---Digital-Content_R0056675
 Workday,unisys,Sr Cloud Engineer (OCI and DevOps),US,2026-11-25,https://unisys.wd5.myworkdayjobs.com/external/job/USA-Remote/Sr-Cloud-Engineer--OCI-and-DevOps-_REQ575003
+Workday,amgen,Senior Data Scientist,US,2026-11-25,https://amgen.wd1.myworkdayjobs.com/careers/job/United-States---Remote/Senior-Data-Scientist_R-262535-1
 Workday,cvshealth,"Senior Manager, Software Development Engineering",US,2026-11-25,https://cvshealth.wd1.myworkdayjobs.com/cvs_health_careers/job/IL---Work-from-home/Senior-Manager--Software-Development-Engineering_R1062070
 Workday,cvshealth,Senior Manager Software Development Engineering,US,2026-11-25,https://cvshealth.wd1.myworkdayjobs.com/cvs_health_careers/job/TN---Work-from-home/Senior-Manager-Software-Development-Engineering_R1097216
 Workday,kiongroup,"Software Engineer, Technical Suport -- Night Shift",US,2026-11-25,https://kiongroup.wd3.myworkdayjobs.com/kiongroup/job/Grand-Rapids-MI-United-States/Software-Engineer--Technical-Suport----Night-Shift_JR-0099408-1
@@ -95,6 +113,7 @@ Workday,rocket,AI Software Development Engineer in Test (SDET),UK,2026-11-25,htt
 Workday,collegeboard,Senior Software Engineer,US,2026-11-25,https://collegeboard.wd1.myworkdayjobs.com/careers/job/Remote---USA/Senior-Security-Engineer_REQ002924
 Workday,equiniti,Senior Software Engineer (WAF & CDN),US,2026-11-25,https://equiniti.wd3.myworkdayjobs.com/opportunities/job/US---Woburn-MA/Senior-Software-Engineer--Akamai-Platform--WAF---CDN-_R18254
 Workday,gilead,AI Product Owner – Digital Content,US,2026-11-25,https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---Foster-City/AI-Product-Owner---Digital-Content_R0056675-1
+Workday,globalhr,Senior Systems Engineer (SYS CertDevOps) (Remote),US,2026-11-25,https://globalhr.wd5.myworkdayjobs.com/rec_rtx_ext_gateway/job/US-IA-CEDAR-RAPIDS-105--400-Collins-Rd-NE--BLDG-105/Senior-Systems-Engineer--SYS-CertDevOps---Remote-_01884833-1
 Workday,wexinc,Senior AI Product Manager (Agent Platform),US,2026-11-25,https://wexinc.wd5.myworkdayjobs.com/wexinc/job/US---Remote/Senior-AI-Product-Manager--Agent-Platform-_R23136
 Workday,wexinc,Staff AI Engineer  (L4),US,2026-11-25,https://wexinc.wd5.myworkdayjobs.com/wexinc/job/US---Remote/Staff-AI-Engineer---L4-_R22452
 SmartRecruiters,NielsenIQ,AI Product Marketing Lead,US,2026-11-25,https://jobs.smartrecruiters.com/NielsenIQ/744000163664829
@@ -195,7 +214,6 @@ Workday,guidehouse,Managing Consultant - Back End Rev Cycle,US,2026-11-24,https:
 Workday,guidehouse,Senior Data Engineer – War Data Platform Subject Matter Expert,US,2026-11-24,https://guidehouse.wd1.myworkdayjobs.com/external/job/US---Remote-Any-location/Senior-Data-Engineer---War-Data-Platform-Subject-Matter-Expert_46806
 Workday,guidehouse,Security Assessor / Analyst Technical Lead,US,2026-11-24,https://guidehouse.wd1.myworkdayjobs.com/external/job/US---MD-Hanover/Security-Assessor---Analyst-Technical-Lead_46274
 Workday,globalhr,"Classified AI Product Lead,  (Associate Director) Remote role, US locations Only",US,2026-11-24,https://globalhr.wd5.myworkdayjobs.com/rec_rtx_ext_gateway/job/US-AZ-REMOTE/Classified-AI-Product-Lead----Associate-Director--Remote-role--US-locations-Only_01891257
-Workday,globalhr,Senior Systems Engineer (SYS CertDevOps) (Remote),US,2026-11-24,https://globalhr.wd5.myworkdayjobs.com/rec_rtx_ext_gateway/job/US-IA-CEDAR-RAPIDS-105--400-Collins-Rd-NE--BLDG-105/Senior-Systems-Engineer--SYS-CertDevOps---Remote-_01884833-1
 Workday,ameresco,Electrical Controls and Communications Systems Engineer,US,2026-11-24,https://ameresco.wd5.myworkdayjobs.com/ameresco/job/USA-Remote/Electrical-Controls-and-Communications-Systems-Engineer_R4145
 Workday,ameresco,Electrical Power Systems Engineer,US,2026-11-24,https://ameresco.wd5.myworkdayjobs.com/ameresco/job/USA-Remote/Electrical-Power-Systems-Engineer_R4144
 Workday,henryschein,Staff Software Engineer,US,2026-11-24,https://henryschein.wd1.myworkdayjobs.com/external_careers/job/Colorado-United-States---Remote/Staff-Software-Engineer_R135685
