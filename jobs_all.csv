@@ -1,7 +1,20 @@
 ﻿platform,company,title,country,published_date_pt,job_url
+Breezy HR,vetsez,Full-stack SMART Application Developer (Remote Opportunity),US,2026-11-27,https://vetsez.breezy.hr/p/e29f14b7dc7101-full-stack-smart-application-developer-remote-opportunity
+Ashby,clera,Founding Backend Engineer,US,2026-11-27,https://jobs.ashbyhq.com/Clera/ead70504-5034-4724-81e8-dd66f85ade4b
+Ashby,revenuecat,Senior Application Security Engineer,UK,2026-11-27,https://jobs.ashbyhq.com/revenuecat/5f454f4b-e6f1-4a63-8733-1d8f869c9b61
+Ashby,griffin,Software Engineer,UK,2026-11-27,https://jobs.ashbyhq.com/griffin/41f7a49a-cd20-47b0-98d7-f8218b927461
+SmartRecruiters,Mirantis,Senior Solutions Architect — Enterprise AI Infrastructure,US,2026-11-27,https://jobs.smartrecruiters.com/Mirantis/744000164078123
+Ashby,clera,Founding AI / Backend Engineer,US,2026-11-27,https://jobs.ashbyhq.com/Clera/07a04ecf-0fb6-4423-9fa9-95de3b3eea6f
+Ashby,kraken.com,Engineering Manager - Frontend - Consumer,UK,2026-11-27,https://jobs.ashbyhq.com/kraken.com/9a798851-3fb0-42ff-9b0c-4c116bfb6e47
+Ashby,n8n,Group Product Manager - AI Experience,UK,2026-11-27,https://jobs.ashbyhq.com/n8n/e59937c7-8c6b-4023-83df-7f755accf6f7
+Lever,provectus,"Growth Marketer, AI-Native",US,2026-11-27,https://jobs.lever.co/provectus/74ecef43-3ef6-4c8b-8f98-de805a467161
+SmartRecruiters,Telefonica Tech,Account Director - Data & AI,UK,2026-11-27,https://jobs.smartrecruiters.com/TelefonicaTech/744000164060507
+Ashby,paddle,Staff Security Engineer,UK,2026-11-27,https://jobs.ashbyhq.com/paddle/4f47990a-b972-4c47-bb77-8ea3cfc7b472
+Breezy HR,social-discovery-ventures,Head of Design (AI Startup),US & UK,2026-11-27,https://social-discovery-ventures.breezy.hr/p/4eb8047307b701-head-of-design-ai-startup
 SmartRecruiters,Miratech,Principal AI Strategist,US,2026-11-27,https://jobs.smartrecruiters.com/Miratech1/744000164027089
 Ashby,neudata,Founding AI GTM Lead,US,2026-11-27,https://jobs.ashbyhq.com/neudata/49e7c544-6cfb-44b2-bea9-80c4d242f8d4
 Lever,jobgether,Software Architect,UK,2026-11-27,https://jobs.lever.co/jobgether/688e48e3-ee22-4919-8a0b-2ff1a28c2f66
+Greenhouse,akersystems,Lead Data Engineer (Active SC clearance),UK,2026-11-27,https://job-boards.eu.greenhouse.io/akersystems/jobs/5049613101
 Lever,jobgether,"Senior Marketer, AI Expert",UK,2026-11-27,https://jobs.lever.co/jobgether/b5c133dc-58b9-420c-b221-b2e831e12533
 Lever,jobgether,Head of Legal AI Education - Remote (San Francisco Bay Area),US,2026-11-27,https://jobs.lever.co/jobgether/56cc96ea-7d61-4856-951e-81953eb0d3da
 Lever,jobgether,Head of Legal AI Education - Remote (New York),US,2026-11-27,https://jobs.lever.co/jobgether/f1e7c8c1-2588-4110-addd-0445ca2edf39
@@ -19,8 +32,13 @@ Lever,jobgether,"Director, Finance Data, Reporting & AI - Remote (Los Angeles)",
 Lever,jobgether,"Director, Finance Data, Reporting & AI - Remote (Chicago)",US,2026-11-27,https://jobs.lever.co/jobgether/0b8fdbff-7fcd-44e4-addb-1fe811ab7144
 Lever,jobgether,"Director, Finance Data, Reporting & AI - Remote (Atlanta)",US,2026-11-27,https://jobs.lever.co/jobgether/7e2df0e2-70cc-4460-8cd1-1d2b8198d892
 Lever,jobgether,"Director, Finance Data, Reporting & AI",US,2026-11-27,https://jobs.lever.co/jobgether/1a0a8d72-6abb-4796-92b2-bf8de7ad8d85
+Greenhouse,affirm,"Senior Software Engineer, Backend (Trust Infra)",US,2026-11-27,https://job-boards.greenhouse.io/affirm/jobs/8199161003
 Lever,jobgether,Principal Product Marketing Manager — AI Systems & Content Architecture,US,2026-11-27,https://jobs.lever.co/jobgether/b4b2a84b-3466-466a-a555-eeb4a76499a9
 Lever,jobgether,Principal Product Marketing Manager — AI Systems & Content Architecture,US,2026-11-27,https://jobs.lever.co/jobgether/8977336b-a2c7-4b70-8f8e-796b59a7c5d0
+Workday,crowdstrike,"Platform Professional Services Senior Consultant (AI), (Remote, GBR)",UK,2026-11-27,https://crowdstrike.wd5.myworkdayjobs.com/crowdstrikecareers/job/United-Kingdom---Remote/Platform-Professional-Services-Senior-Consultant--AI----Remote--GBR-_R30829
+Workday,db,"Java Full Stack Developer, Global Rates Trading - Vice President",US,2026-11-27,https://db.wd3.myworkdayjobs.com/dbwebsite/job/New-York-1-Columbus-Circle/Java-Full-Stack-Developer---Vice-President_R0451008-1
+Workday,acronis,Senior Backend Developer (Python / Go),UK,2026-11-27,https://acronis.wd502.myworkdayjobs.com/acronis_careers/job/Bulgaria/Senior-Backend-Developer--Python---Go-_R-101328
+Workday,csiweb,Full Stack Software Engineer (.NET / Angular / Azure),US,2026-11-27,https://csiweb.wd1.myworkdayjobs.com/csi_careers/job/Remote-USA/Full-Stack-Software-Engineer--NET---Angular---Azure-_R-100693
 Lever,jobgether,SAP GRC and Security Architect,UK,2026-11-26,https://jobs.lever.co/jobgether/d198e376-632c-4c33-813c-93d8ed218dea
 Lever,jobgether,Senior Research Integration and Software Developer - Healthcare,US,2026-11-26,https://jobs.lever.co/jobgether/757a6941-145e-43d2-b9fc-004c132d065c
 Lever,jobgether,Senior Data Engineer / Technical Lead,US,2026-11-26,https://jobs.lever.co/jobgether/7386a491-56a3-4caa-ad4e-1cfb35c84a2c
@@ -218,7 +236,6 @@ Ashby,protege,"Staff Software Engineer, Transformations",US,2026-11-24,https://j
 Ashby,prompt,"Senior DevOps Engineer, Team Lead",US,2026-11-24,https://jobs.ashbyhq.com/Prompt/a69fed87-11ee-44af-a069-88cd007d942e
 Greenhouse,PathAI,Staff Site Reliability Engineer,US,2026-11-24,https://www.pathai.com/careers/8961170002?gh_jid=8961170002
 Ashby,protege,Founding Platform Engineer,US,2026-11-24,https://jobs.ashbyhq.com/protege/4df379fc-49c6-4695-ab32-721d1663d800
-Breezy HR,social-discovery-ventures,Head of Design (AI Startup),US & UK,2026-11-24,https://social-discovery-ventures.breezy.hr/p/4eb8047307b701-head-of-design-ai-startup
 Greenhouse,Axiom,"Senior Manager, Sales Technology & AI Enablement (Remote)",US,2026-11-24,https://www.axiomlaw.com/careers/headquarters/available-positions?job=8918201002&gh_jid=8918201002
 Ashby,posthog,Data Scientist (Sales),US,2026-11-24,https://jobs.ashbyhq.com/PostHog/f154781c-0777-4374-8108-5140de5f3871
 Greenhouse,wurljobs,"Senior Software Engineer, Ad Platform",US,2026-11-24,https://job-boards.greenhouse.io/wurljobs/jobs/4731769006
